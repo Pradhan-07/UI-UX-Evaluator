@@ -240,8 +240,8 @@ curl -X POST http://localhost:5001/api/analyze \
 
 ```bash
 # Clone the repository
-git clone https://github.com/Pradhan-07/UX-Evaluator.git
-cd UX-Evaluator
+git clone https://github.com/Pradhan-07/UI-UX-Evaluator.git
+cd UI-UX-Evaluator
 
 # Terminal 1: Start Express Backend
 cd backend
