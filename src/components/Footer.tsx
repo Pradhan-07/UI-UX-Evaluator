@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Check, Send, ShieldCheck, Zap } from "lucide-react";
 import { playMicroClick } from "@/utils/audio";
+import { EASE_PREMIUM } from "@/lib/motion";
 
 export function Footer() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const prefersReduced = useReducedMotion();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,22 +22,29 @@ export function Footer() {
     }, 3500);
   };
 
+  // Back to top smoothly via Lenis
   const scrollToTop = () => {
     playMicroClick();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof window !== "undefined" && (window as any).__lenis) {
+      (window as any).__lenis.scrollTo(0, { duration: 1.2 });
+    } else if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
+  const wordmarkLetters = "PROTOLENS".split("");
+
   return (
-    <footer className="bg-[#050507] border-t border-white/[0.08] text-zinc-400 font-mono text-xs">
+    <footer className="bg-[#050507] border-t border-white/[0.08] text-zinc-400 font-mono text-xs overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         {/* Top Agency Branding Row */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 border-b border-white/[0.08]">
           <div className="lg:col-span-6 space-y-4">
             <div className="flex items-center gap-2.5">
               <div className="w-3 h-3 bg-[#c8ff3d] rounded-sm" />
-              <span className="text-xl font-bold tracking-wider text-white">FRICTION</span>
+              <span className="text-xl font-bold tracking-wider text-white">PROTOLENS</span>
               <span className="text-[10px] text-[#c8ff3d] bg-[#c8ff3d]/10 border border-[#c8ff3d]/30 px-1.5 py-0.5 rounded">
-                SYSTEMS
+                AUTONOMOUS UX
               </span>
             </div>
             <p className="text-sm font-sans text-zinc-400 font-light max-w-md leading-relaxed">
@@ -146,10 +156,32 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Giant Footer Wordmark Rising Letter-by-Letter */}
+        <div className="overflow-hidden mt-16 pt-8 pb-4 border-t border-white/[0.08]">
+          <div className="flex justify-between items-center overflow-hidden w-full">
+            {wordmarkLetters.map((char, idx) => (
+              <motion.span
+                key={idx}
+                initial={prefersReduced ? false : { y: "115%", opacity: 0 }}
+                whileInView={{ y: "0%", opacity: 1 }}
+                viewport={{ once: true, margin: "-20px" }}
+                transition={{
+                  duration: 0.7,
+                  delay: prefersReduced ? 0 : idx * 0.045,
+                  ease: EASE_PREMIUM,
+                }}
+                className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl xl:text-[11rem] font-black tracking-tight text-white/[0.07] hover:text-[#c8ff3d]/25 transition-colors cursor-default select-none inline-block will-change-transform leading-none"
+              >
+                {char}
+              </motion.span>
+            ))}
+          </div>
+        </div>
+
         {/* Bottom Tagline & Legal */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-400 text-[11px]">
           <div>
-            &copy; 2026 FRICTION SYSTEMS INC. ALL RIGHTS RESERVED.
+            &copy; 2026 PROTOLENS SYSTEMS INC. ALL RIGHTS RESERVED.
           </div>
           <div className="text-[#c8ff3d] font-bold tracking-wider">
             DESIGNERS SHOULD DESIGN. AI SHOULD FIND THE FRICTION.

@@ -10,6 +10,9 @@ import { UxCostCalculator } from "@/components/UxCostCalculator";
 import { LiveAnalyzer } from "@/components/LiveAnalyzer";
 import { WhatWeCheckAndHowItWorks } from "@/components/WhatWeCheckAndHowItWorks";
 import { HeuristicsMatrix } from "@/components/HeuristicsMatrix";
+import { SampleReportCard } from "@/components/SampleReportCard";
+import { FaqSection } from "@/components/FaqSection";
+import { FinalCta } from "@/components/FinalCta";
 import { Footer } from "@/components/Footer";
 import { DemoModal } from "@/components/DemoModal";
 
@@ -54,6 +57,15 @@ export default function Home() {
 
         {/* [06] HEURISTICS MATRIX */}
         <HeuristicsMatrix />
+
+        {/* [07] SAMPLE REPORT */}
+        <SampleReportCard />
+
+        {/* [08] FAQ SECTION */}
+        <FaqSection />
+
+        {/* [09] FINAL CTA */}
+        <FinalCta onOpenDemo={() => setDemoOpen(true)} />
       </main>
 
       {/* FOOTER */}
