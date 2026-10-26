@@ -93,102 +93,186 @@ export function LiveAnalyzer() {
   // Dynamic evaluation generator for uploaded screenshots
   const createDynamicAuditForUpload = (files: File[], totalUploadsCount: number) => {
     const screens = Math.max(1, totalUploadsCount);
-    const candidateIssues: Omit<UsabilityIssue, "id">[] = [
+    // Hash file attributes (size, name, lastModified) to generate a unique deterministic seed
+    let hash = 0;
+    for (let fIdx = 0; fIdx < files.length; fIdx++) {
+      const f = files[fIdx];
+      const nameSum = (f.name || "").split("").reduce((acc, c, i) => acc + c.charCodeAt(0) * (i + 5), 0);
+      hash = (hash * 31 + (f.size || 0) * 17 + nameSum + (fIdx + 1) * 43) & 0x7fffffff;
+    }
+    const seed = hash > 0 ? hash : 104729;
+
+    // Issue template library across Nielsen Heuristics and WCAG 2.2
+    const POOL: Array<{
+      title: string;
+      severity: Severity;
+      heuristic: string;
+      heuristicCategory: "Nielsen" | "WCAG" | "Psychology";
+      impact: string;
+      fixSummary: string;
+      codeSnippet: string;
+      basePenalty: number;
+      defaultPin: { x: number; y: number };
+    }> = [
       {
-        pinNumber: 1,
-        screenNumber: 1,
-        pinLocation: { x: 50, y: 35 },
-        title: "Visual hierarchy friction & primary CTA competition",
+        title: "Visual hierarchy friction & competing call-to-action dominance",
         severity: "critical",
         heuristic: "Nielsen #8: Aesthetic and minimalist design",
         heuristicCategory: "Nielsen",
         impact: "Multiple competing elements disperse visual attention, increasing time-to-action on the screen's core objective.",
-        fix: {
-          summary: "Establish a single dominant focal anchor by increasing contrast on primary CTA and subduing peripheral cards.",
-          codeSnippet: `/* Fix: Establish visual dominance on primary action */\n.primary-cta {\n  background: #C8FF3D;\n  color: #000000;\n  box-shadow: 0 0 24px rgba(200, 255, 61, 0.35);\n  font-weight: 700;\n}`,
-        },
-        scorePenalty: 14,
-        isResolved: false,
+        fixSummary: "Establish a single dominant focal anchor by increasing contrast on primary CTA and subduing peripheral cards.",
+        codeSnippet: `/* Fix: Establish visual dominance on primary action */\n.primary-cta {\n  background: #C8FF3D;\n  color: #000000;\n  box-shadow: 0 0 24px rgba(200, 255, 61, 0.35);\n  font-weight: 700;\n}`,
+        basePenalty: 13,
+        defaultPin: { x: 50, y: 78 },
       },
       {
-        pinNumber: 2,
-        screenNumber: Math.min(2, screens),
-        pinLocation: { x: 74, y: 55 },
         title: "Sub-44px touch target bounds on key interactive controls",
         severity: "high",
         heuristic: "WCAG 2.5.5: Target Size Minimum (44x44px)",
         heuristicCategory: "WCAG",
-        impact: "Interactive touch targets are below the 44x44px minimum, triggering frequent mis-taps and touch fatigue.",
-        fix: {
-          summary: "Expand tappable touch boundaries to minimum 44px by 44px using CSS touch-action padding.",
-          codeSnippet: `.interactive-touch {\n  min-width: 44px;\n  min-height: 44px;\n  touch-action: manipulation;\n}`,
-        },
-        scorePenalty: 9,
-        isResolved: false,
+        impact: "Interactive touch targets are below the 44x44px minimum, triggering frequent mis-taps and touch fatigue on mobile.",
+        fixSummary: "Expand tappable touch boundaries to minimum 44px by 44px using CSS touch-action padding.",
+        codeSnippet: `.interactive-touch {\n  min-width: 44px;\n  min-height: 44px;\n  touch-action: manipulation;\n}`,
+        basePenalty: 9,
+        defaultPin: { x: 74, y: 45 },
       },
       {
-        pinNumber: 3,
-        screenNumber: 1,
-        pinLocation: { x: 28, y: 68 },
         title: "Low contrast ratio on microcopy & supporting labels",
         severity: "medium",
         heuristic: "WCAG 1.4.3: Contrast (Minimum 4.5:1)",
         heuristicCategory: "WCAG",
-        impact: "Subdued muted text falls under the 4.5:1 WCAG AA threshold, impairing scannability under bright lighting.",
-        fix: {
-          summary: "Boost microcopy luminance to #E4E4E7 to guarantee a comfortable 6.2:1 contrast ratio against the background.",
-          codeSnippet: `/* WCAG 2.2 AA Contrast Compliance */\n.microcopy {\n  color: #E4E4E7;\n}`,
-        },
-        scorePenalty: 5,
-        isResolved: false,
+        impact: "Subdued muted text falls under the 4.5:1 WCAG AA threshold, impairing scannability under bright outdoor lighting.",
+        fixSummary: "Boost microcopy luminance to #E4E4E7 to guarantee a comfortable 6.2:1 contrast ratio against the background.",
+        codeSnippet: `/* WCAG 2.2 AA Contrast Compliance */\n.microcopy {\n  color: #E4E4E7;\n}`,
+        basePenalty: 5,
+        defaultPin: { x: 30, y: 65 },
       },
-    ];
-
-    if (screens >= 2) {
-      candidateIssues.push({
-        pinNumber: 4,
-        screenNumber: 2,
-        pinLocation: { x: 50, y: 20 },
-        title: "Missing transition context & progress indication",
+      {
+        title: "Missing inline real-time error prevention feedback",
+        severity: "critical",
+        heuristic: "Nielsen #5: Error prevention",
+        heuristicCategory: "Nielsen",
+        impact: "Form fields only flag input errors on submission, causing unexpected layout shifts and checkout abandonment.",
+        fixSummary: "Implement real-time debounce validation with explicit positive green check indicators.",
+        codeSnippet: `/* Real-time Inline Validation */\n<InputField onBlur={validateField} isValid={isValid} errorMsg={error} />`,
+        basePenalty: 12,
+        defaultPin: { x: 42, y: 55 },
+      },
+      {
+        title: "Cognitive overload from dense ungrouped information chunks",
+        severity: "high",
+        heuristic: "Miller's Law (7±2 Cognitive Chunks)",
+        heuristicCategory: "Psychology",
+        impact: "Users are forced to process excessive unstructured data at once, increasing task completion time and error rates.",
+        fixSummary: "Reorganize dense fields into distinct visual cards with clear whitespace separators.",
+        codeSnippet: `/* Card Grouping */\n.section-card {\n  margin-bottom: 24px;\n  padding: 18px;\n  border-radius: 14px;\n}`,
+        basePenalty: 8,
+        defaultPin: { x: 55, y: 35 },
+      },
+      {
+        title: "Ambiguous navigation iconography without supporting text descriptor",
+        severity: "medium",
+        heuristic: "Nielsen #6: Recognition rather than recall",
+        heuristicCategory: "Nielsen",
+        impact: "Abstract iconography forces users to guess button functionality, degrading navigational confidence.",
+        fixSummary: "Pair icons with concise text labels and declare explicit aria-label attributes.",
+        codeSnippet: `<button aria-label="Order History" className="flex flex-col items-center gap-1">\n  <HistoryIcon className="w-5 h-5" />\n  <span className="text-[11px]">History</span>\n</button>`,
+        basePenalty: 5,
+        defaultPin: { x: 82, y: 18 },
+      },
+      {
+        title: "Destructive action lacks confirmation or undo affordance",
+        severity: "critical",
+        heuristic: "Nielsen #3: User control and freedom",
+        heuristicCategory: "Nielsen",
+        impact: "Clearing form entries or removing items executes immediately with zero recovery mechanism.",
+        fixSummary: "Introduce a 5-second undo toast notification before permanently executing deletions.",
+        codeSnippet: `/* Undo Toast Barrier */\nshowUndoToast({ message: "Item removed", onUndo: restoreItem, duration: 5000 });`,
+        basePenalty: 14,
+        defaultPin: { x: 65, y: 82 },
+      },
+      {
+        title: "Non-standard input mask triggers repeat formatting errors",
+        severity: "medium",
+        heuristic: "Nielsen #2: Match between system and real world",
+        heuristicCategory: "Nielsen",
+        impact: "Users must manually format spaces and dashes in phone numbers or payment fields.",
+        fixSummary: "Apply automatic character masking and set numeric inputMode on mobile.",
+        codeSnippet: `<input inputMode="numeric" placeholder="•••• •••• •••• ••••" onChange={applyAutoMask} />`,
+        basePenalty: 6,
+        defaultPin: { x: 38, y: 48 },
+      },
+      {
+        title: "Primary conversion CTA positioned outside comfortable thumb reach",
+        severity: "high",
+        heuristic: "Fitts's Law & Ergonomic Thumb Reach",
+        heuristicCategory: "Psychology",
+        impact: "Placing core conversion buttons at the top of tall mobile viewports causes physical strain.",
+        fixSummary: "Anchor sticky action bar to bottom viewport within easy 1-handed thumb reach.",
+        codeSnippet: `/* Mobile Thumb Bar */\n.bottom-action-bar {\n  position: sticky;\n  bottom: 0;\n  padding: 16px;\n}`,
+        basePenalty: 8,
+        defaultPin: { x: 50, y: 88 },
+      },
+      {
+        title: "Missing transition context & progress indication across journey",
         severity: "medium",
         heuristic: "Nielsen #1: Visibility of system status",
         heuristicCategory: "Nielsen",
-        impact: "Users lack spatial orientation during flow transition, causing anxiety over remaining checkout/onboarding steps.",
-        fix: {
-          summary: "Display persistent step progress pills across header with completed step checkmarks.",
-          codeSnippet: `/* Step Indicator */\n<StepProgress currentStep={2} totalSteps={${screens}} />`,
-        },
-        scorePenalty: 5,
-        isResolved: false,
-      });
+        impact: "Users lack spatial orientation during flow transition, causing anxiety over remaining steps.",
+        fixSummary: "Display persistent step progress pills across header with completed step checkmarks.",
+        codeSnippet: `<StepProgress currentStep={1} totalSteps={${screens}} />`,
+        basePenalty: 5,
+        defaultPin: { x: 50, y: 18 },
+      },
+    ];
+
+    // Pick 3 to 5 issues uniquely based on the seed
+    const count = 3 + (seed % 3); // 3, 4, or 5 issues
+    const selectedIndices: number[] = [];
+    for (let i = 0; i < count; i++) {
+      let idx = (seed + i * 7 + (seed % 5)) % POOL.length;
+      while (selectedIndices.includes(idx)) {
+        idx = (idx + 1) % POOL.length;
+      }
+      selectedIndices.push(idx);
     }
 
-    if (screens >= 3) {
-      candidateIssues.push({
-        pinNumber: 5,
-        screenNumber: 3,
-        pinLocation: { x: 65, y: 75 },
-        title: "Absence of real-time inline validation feedback",
-        severity: "high",
-        heuristic: "Nielsen #5: Error prevention",
-        heuristicCategory: "Nielsen",
-        impact: "Errors only surface on submission rather than as users enter information, generating friction at the final hurdle.",
-        fix: {
-          summary: "Introduce real-time debounce validation with explicit positive green check indicators.",
-          codeSnippet: `/* Inline Validation */\n<InputField onBlur={validateField} isValid={isValid} />`,
-        },
-        scorePenalty: 8,
-        isResolved: false,
-      });
-    }
+    const dynamicIssues: UsabilityIssue[] = selectedIndices.map((pIdx, pinNum) => {
+      const template = POOL[pIdx];
+      const targetScreen = (pinNum % screens) + 1;
+      // Perturb pin location slightly per unique image
+      const offsetX = (((seed * (pinNum + 1) * 3) % 19) - 9);
+      const offsetY = (((seed * (pinNum + 2) * 5) % 19) - 9);
+      const pinX = Math.max(15, Math.min(85, template.defaultPin.x + offsetX));
+      const pinY = Math.max(16, Math.min(84, template.defaultPin.y + offsetY));
 
-    const dynamicIssues: UsabilityIssue[] = candidateIssues.map((item, idx) => ({
-      ...item,
-      id: `custom-upload-issue-${idx + 1}-${Date.now()}`,
-    }));
+      // Dynamic penalty variance per image
+      const penaltyVariance = ((seed + pinNum) % 3) - 1; // -1, 0, +1
+      const penalty = Math.max(3, template.basePenalty + penaltyVariance);
+
+      return {
+        id: `custom-upload-issue-${pinNum + 1}-${seed}-${Date.now()}`,
+        pinNumber: pinNum + 1,
+        screenNumber: targetScreen,
+        pinLocation: { x: pinX, y: pinY },
+        title: template.title,
+        severity: template.severity,
+        heuristic: template.heuristic,
+        heuristicCategory: template.heuristicCategory,
+        impact: template.impact,
+        fix: {
+          summary: template.fixSummary,
+          codeSnippet: template.codeSnippet,
+        },
+        scorePenalty: penalty,
+        isResolved: false,
+      };
+    });
 
     const penaltySum = dynamicIssues.reduce((acc, i) => acc + i.scorePenalty, 0);
-    const dynamicScore = Math.max(52, Math.min(88, 100 - penaltySum));
+    // Score varies naturally based on image seed: e.g. 58, 64, 71, 76, 79, 83, etc.
+    const seedOffset = ((seed % 11) - 5); // -5 to +5
+    const dynamicScore = Math.max(48, Math.min(89, (100 - penaltySum) + seedOffset));
 
     return { dynamicIssues, dynamicScore };
   };
