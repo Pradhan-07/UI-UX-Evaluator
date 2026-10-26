@@ -8,6 +8,7 @@ import { WhoWeAre } from "@/components/WhoWeAre";
 import { TheProblem } from "@/components/TheProblem";
 import { UxCostCalculator } from "@/components/UxCostCalculator";
 import { LiveAnalyzer } from "@/components/LiveAnalyzer";
+import { WhatWeCheckAndHowItWorks } from "@/components/WhatWeCheckAndHowItWorks";
 import { HeuristicsMatrix } from "@/components/HeuristicsMatrix";
 import { Footer } from "@/components/Footer";
 import { DemoModal } from "@/components/DemoModal";
@@ -47,6 +48,9 @@ export default function Home() {
 
         {/* [05] LIVE ANALYZER (THE CORE) */}
         <LiveAnalyzer />
+
+        {/* [05B, 05C] WHAT WE CHECK + HOW IT WORKS */}
+        <WhatWeCheckAndHowItWorks />
 
         {/* [06] HEURISTICS MATRIX */}
         <HeuristicsMatrix />
