@@ -79,18 +79,18 @@ export function DemoModal({ isOpen, onClose }: DemoModalProps) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-xl">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-4xl rounded-2xl border border-white/20 bg-zinc-950 shadow-2xl overflow-hidden flex flex-col"
+          className="relative w-full max-w-4xl rounded-2xl border border-border bg-surface shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header Bar */}
-          <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between font-mono text-xs text-zinc-400">
+          <div className="p-4 sm:p-5 border-b border-border flex items-center justify-between font-mono text-xs text-muted">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#c8ff3d] animate-ping" />
-              <span className="text-white font-bold tracking-wider">
+              <span className="w-2.5 h-2.5 rounded-full bg-accent animate-ping" />
+              <span className="text-text font-bold tracking-wider">
                 FRICTION // 90-SECOND SYSTEM WALKTHROUGH
               </span>
             </div>
@@ -99,16 +99,16 @@ export function DemoModal({ isOpen, onClose }: DemoModalProps) {
                 playMicroClick();
                 onClose();
               }}
-              className="p-1 rounded hover:bg-white/10 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-surface-2 text-muted hover:text-text transition-colors cursor-pointer border border-transparent hover:border-border"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Interactive Player Screen */}
-          <div className="relative aspect-video bg-black flex flex-col justify-between p-6 sm:p-8 overflow-hidden">
+          {/* Interactive Player Screen (High-tech monitor simulation) */}
+          <div className="relative aspect-video bg-zinc-950 flex flex-col justify-between p-6 sm:p-8 overflow-hidden mx-4 sm:mx-6 my-4 rounded-xl border border-border shadow-inner">
             {/* Ambient Animated Radar Grid */}
-            <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none" />
+            <div className="absolute inset-0 bg-grid-pattern opacity-25 pointer-events-none" />
             
             {/* Scanning Laser Line */}
             <motion.div
@@ -122,7 +122,7 @@ export function DemoModal({ isOpen, onClose }: DemoModalProps) {
               <span className="px-2.5 py-1 rounded bg-[#c8ff3d]/15 border border-[#c8ff3d]/40 text-[#c8ff3d] font-bold">
                 {chapters[currentChapter].title}
               </span>
-              <span className="text-zinc-500">{chapters[currentChapter].time}</span>
+              <span className="text-zinc-400 font-mono">{chapters[currentChapter].time}</span>
             </div>
 
             {/* Center Visual Mockup & Scanning Diagnostics */}
@@ -137,21 +137,21 @@ export function DemoModal({ isOpen, onClose }: DemoModalProps) {
             </div>
 
             {/* Bottom Narration & Telemetry */}
-            <div className="relative z-20 flex items-center justify-between font-mono text-xs text-zinc-500 pt-2 border-t border-white/10">
-              <div className="flex items-center gap-2 text-zinc-400">
+            <div className="relative z-20 flex items-center justify-between font-mono text-xs text-zinc-400 pt-2 border-t border-white/10">
+              <div className="flex items-center gap-2 text-zinc-300">
                 <ShieldCheck className="w-4 h-4 text-[#c8ff3d]" />
                 <span>EVALUATION ENGINE: ACTIVE V2.4</span>
               </div>
-              <div>COGNITIVE SACCADES: 40HZ AUDIT PASS</div>
+              <div className="text-zinc-500">COGNITIVE SACCADES: 40HZ AUDIT PASS</div>
             </div>
           </div>
 
           {/* Controls Bar */}
-          <div className="p-4 sm:p-5 border-t border-white/10 bg-zinc-900/80 font-mono text-xs flex flex-col gap-3">
+          <div className="p-4 sm:p-5 border-t border-border bg-surface-2 font-mono text-xs flex flex-col gap-3">
             {/* Scrub bar */}
-            <div className="relative w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden cursor-pointer">
+            <div className="relative w-full h-2 rounded-full bg-border overflow-hidden cursor-pointer">
               <div
-                className="h-full bg-[#c8ff3d] transition-all duration-200"
+                className="h-full bg-accent transition-all duration-200"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -163,18 +163,18 @@ export function DemoModal({ isOpen, onClose }: DemoModalProps) {
                     playMicroClick();
                     setIsPlaying(!isPlaying);
                   }}
-                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                  className="p-2 rounded-lg bg-surface border border-border hover:bg-surface-2 text-text transition-colors cursor-pointer"
                 >
                   {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current" />}
                 </button>
                 <button
                   onClick={handleRestart}
-                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                  className="p-2 rounded-lg bg-surface border border-border hover:bg-surface-2 text-muted hover:text-text transition-colors cursor-pointer"
                   title="Replay from start"
                 >
                   <RotateCcw className="w-4 h-4" />
                 </button>
-                <span className="text-zinc-400">
+                <span className="text-muted font-mono">
                   {Math.floor((progress / 100) * 90)}s / 90s
                 </span>
               </div>
@@ -187,7 +187,7 @@ export function DemoModal({ isOpen, onClose }: DemoModalProps) {
                     const el = document.getElementById("analyzer");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="px-4 py-2 rounded-lg bg-[#c8ff3d] text-black font-bold uppercase tracking-wider hover:bg-[#d6ff5e] transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-accent text-accent-ink font-bold uppercase tracking-wider hover:bg-[#d6ff5e] transition-colors cursor-pointer shadow-sm"
                 >
                   Test My App Now &rarr;
                 </button>

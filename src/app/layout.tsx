@@ -48,6 +48,7 @@ export const metadata: Metadata = {
 
 import { CustomCursor } from "@/components/CustomCursor";
 import { SmoothScrollProvider, ScrollProgressBar } from "@/lib/motion";
+import { ThemeProvider } from "@/lib/theme";
 
 export default function RootLayout({
   children,
@@ -57,14 +58,32 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} dark antialiased scroll-smooth`}
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased scroll-smooth`}
     >
-      <body className="min-h-screen bg-[#08080a] text-[#f2f2f2] font-sans selection:bg-[#c8ff3d] selection:text-black">
-        <SmoothScrollProvider>
-          <ScrollProgressBar />
-          <CustomCursor />
-          {children}
-        </SmoothScrollProvider>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem("protolens_theme");
+                  var theme = saved || "light";
+                  document.documentElement.setAttribute("data-theme", theme);
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-screen bg-bg text-text font-sans selection:bg-accent selection:text-accent-ink transition-colors duration-150">
+        <ThemeProvider>
+          <SmoothScrollProvider>
+            <ScrollProgressBar />
+            <CustomCursor />
+            {children}
+          </SmoothScrollProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

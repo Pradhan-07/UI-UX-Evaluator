@@ -5,6 +5,9 @@ import { motion, AnimatePresence, useScroll, useReducedMotion } from "framer-mot
 import { Volume2, VolumeX, Menu, X, ArrowUpRight, ShieldCheck, Clock } from "lucide-react";
 import { toggleSound, playMicroClick } from "@/utils/audio";
 import { EASE_PREMIUM } from "@/lib/motion";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { BrandLogo } from "@/components/BrandLogo";
+
 
 interface NavbarProps {
   onOpenDemo: () => void;
@@ -116,52 +119,52 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
       <motion.header
         animate={{ y: hidden && !menuOpen ? "-100%" : "0%" }}
         transition={{ duration: 0.35, ease: EASE_PREMIUM }}
-        className="fixed top-0 left-0 right-0 z-50 bg-[#08080a]/85 backdrop-blur-md border-b border-white/[0.08]"
+        className="fixed top-0 left-0 right-0 z-50 bg-bg/85 backdrop-blur-md border-b border-border transition-colors duration-200"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Logo Left */}
+          {/* Brand Logo Left */}
           <div className="flex items-center gap-3">
             <a
               href="#hero"
               onClick={() => playMicroClick()}
-              className="group flex items-center gap-2.5 font-bold tracking-tight text-white hover:text-[#c8ff3d] transition-colors"
+              className="group flex items-center transition-all duration-200 hover:opacity-90"
+              aria-label="FRICTION - Return to top"
             >
-              <div className="w-2.5 h-2.5 bg-[#c8ff3d] rounded-sm group-hover:scale-125 transition-transform" />
-              <span className="text-lg font-mono tracking-wider">FRICTION</span>
-              <span className="text-[10px] font-mono tracking-widest text-[#c8ff3d] bg-[#c8ff3d]/10 border border-[#c8ff3d]/30 px-1.5 py-0.5 rounded">
-                v2.4
-              </span>
+              <BrandLogo className="h-9 sm:h-10 w-auto group-hover:scale-[1.02] transition-transform duration-200" showBadge={true} />
             </a>
           </div>
 
           {/* Center: Live Clock & City Switcher */}
-          <div className="hidden md:flex items-center gap-3 font-mono text-xs text-zinc-400">
+          <div className="hidden md:flex items-center gap-3 font-mono text-xs text-muted">
             <button
               onClick={cycleCity}
               title="Click to toggle timezone"
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] border border-white/[0.08] hover:border-white/20 hover:text-white transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface border border-border hover:border-border text-text transition-colors cursor-pointer"
             >
-              <Clock className="w-3.5 h-3.5 text-[#c8ff3d]" />
-              <span className="text-zinc-200 font-medium">{CITIES[selectedCityIndex].name}</span>
-              <span className="text-[#c8ff3d] font-bold min-w-[76px] text-right">{timeStr || "--:--:--"}</span>
+              <Clock className="w-3.5 h-3.5 text-accent-text" />
+              <span className="text-text font-medium">{CITIES[selectedCityIndex].name}</span>
+              <span className="text-accent-text font-bold min-w-[76px] text-right">{timeStr || "--:--:--"}</span>
             </button>
-            <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="flex items-center gap-1.5 text-[11px] text-muted">
+              <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
               <span>SYSTEM NOMINAL</span>
             </div>
           </div>
 
           {/* Right: Actions & Menu */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Theme Toggle Button */}
+            <ThemeToggle />
+
             {/* Audio Toggle */}
             <button
               onClick={handleToggleSound}
               title={soundOn ? "Mute interface feedback" : "Enable tactile sound feedback"}
               aria-label="Sound feedback toggle"
-              className={`p-2 rounded border transition-colors cursor-pointer ${
+              className={`min-w-[44px] min-h-[44px] w-11 h-11 rounded-xl flex items-center justify-center border transition-colors cursor-pointer ${
                 soundOn
-                  ? "bg-[#c8ff3d]/10 text-[#c8ff3d] border-[#c8ff3d]/40"
-                  : "bg-white/[0.03] text-zinc-400 border-white/[0.08] hover:text-white hover:border-white/20"
+                  ? "bg-accent/15 text-accent-text border-accent/40"
+                  : "bg-surface text-muted border-border hover:text-text hover:bg-surface-2"
               }`}
             >
               {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
@@ -171,10 +174,10 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
             <a
               href="#analyzer"
               onClick={() => playMicroClick()}
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono font-medium px-3.5 py-1.5 rounded bg-white/[0.05] border border-white/[0.12] text-zinc-200 hover:text-white hover:border-[#c8ff3d] hover:bg-[#c8ff3d]/10 transition-all cursor-pointer"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono font-medium px-3.5 py-2.5 rounded-xl bg-surface border border-border text-text hover:text-accent-text hover:border-accent-text hover:bg-surface-2 transition-all cursor-pointer min-h-[44px]"
             >
               <span>[05] ANALYZE</span>
-              <span className="text-[#c8ff3d]">&rarr;</span>
+              <span className="text-accent-text">&rarr;</span>
             </a>
 
             {/* Menu Trigger */}
@@ -183,12 +186,12 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
                 playMicroClick();
                 setMenuOpen(!menuOpen);
               }}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded bg-zinc-900 border border-white/20 hover:border-[#c8ff3d] text-white hover:text-[#c8ff3d] transition-all font-mono text-xs font-semibold cursor-pointer"
+              className="min-w-[44px] min-h-[44px] flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface border border-border hover:border-accent-text text-text hover:text-accent-text transition-all font-mono text-xs font-semibold cursor-pointer"
               aria-expanded={menuOpen}
               aria-label="Toggle navigation menu"
             >
               <span>{menuOpen ? "CLOSE" : "MENU"}</span>
-              <span className="text-zinc-500 text-[10px] hidden sm:inline">[ESC]</span>
+              <span className="text-muted text-[10px] hidden sm:inline">[ESC]</span>
               {menuOpen ? <X className="w-3.5 h-3.5" /> : <Menu className="w-3.5 h-3.5" />}
             </button>
           </div>
@@ -218,16 +221,22 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
               opacity: prefersReduced ? 0 : 1,
             }}
             transition={{ duration: 0.55, ease: EASE_PREMIUM }}
-            className="fixed inset-0 z-40 bg-[#08080a]/98 backdrop-blur-2xl pt-20 px-6 overflow-y-auto flex flex-col justify-between"
+            className="fixed inset-0 z-40 bg-bg/98 backdrop-blur-2xl pt-20 px-6 overflow-y-auto flex flex-col justify-between text-text"
           >
             <div className="max-w-6xl mx-auto w-full py-8">
-              <div className="flex items-center justify-between pb-6 border-b border-white/[0.08] mb-8">
-                <span className="font-mono text-xs text-[#c8ff3d] tracking-widest uppercase">
+              <div className="flex items-center justify-between pb-6 border-b border-border mb-8">
+                <span className="font-mono text-xs text-accent-text tracking-widest uppercase">
                   [NAVIGATIONAL INDEX // DIRECTORY]
                 </span>
-                <span className="font-mono text-xs text-zinc-500">
-                  PRESS ESC OR CLICK ANY ANCHOR TO JUMP
-                </span>
+                <div className="flex items-center gap-4">
+                  <span className="hidden sm:inline font-mono text-xs text-muted">
+                    THEME:
+                  </span>
+                  <ThemeToggle />
+                  <span className="font-mono text-xs text-muted hidden md:inline">
+                    PRESS ESC OR CLICK ANY ANCHOR TO JUMP
+                  </span>
+                </div>
               </div>
 
               {/* Staggered Links */}
@@ -243,22 +252,22 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
                       ease: EASE_PREMIUM,
                     }}
                     onClick={() => handleNavClick(link.href)}
-                    className="group text-left p-5 rounded-lg border border-white/[0.06] bg-white/[0.015] hover:bg-white/[0.04] hover:border-[#c8ff3d]/40 transition-all flex items-start justify-between cursor-pointer"
+                    className="group text-left p-5 rounded-xl border border-border bg-surface hover:bg-surface-2 hover:border-accent-text/40 transition-all flex items-start justify-between cursor-pointer"
                   >
                     <div>
                       <div className="flex items-center gap-3">
-                        <span className="font-mono text-xs text-[#c8ff3d] font-bold">
+                        <span className="font-mono text-xs text-accent-text font-bold">
                           [{link.num}]
                         </span>
-                        <span className="text-xl sm:text-2xl font-bold tracking-tight text-white group-hover:text-[#c8ff3d] transition-colors">
+                        <span className="text-xl sm:text-2xl font-bold tracking-tight text-text group-hover:text-accent-text transition-colors">
                           {link.label}
                         </span>
                       </div>
-                      <p className="mt-1 text-xs text-zinc-400 font-mono">
+                      <p className="mt-1 text-xs text-muted font-mono">
                         {link.desc}
                       </p>
                     </div>
-                    <ArrowUpRight className="w-5 h-5 text-zinc-500 group-hover:text-[#c8ff3d] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                    <ArrowUpRight className="w-5 h-5 text-muted group-hover:text-accent-text group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                   </motion.button>
                 ))}
               </div>
@@ -268,25 +277,25 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.35 }}
-                className="mt-8 p-6 rounded-xl border border-white/[0.08] bg-zinc-950/60 grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-xs text-zinc-400"
+                className="mt-8 p-6 rounded-xl border border-border bg-surface grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-xs text-muted"
               >
                 <div>
-                  <div className="text-zinc-500 uppercase tracking-wider mb-1">
+                  <div className="text-muted uppercase tracking-wider mb-1">
                     ENGINE SPECIFICATION
                   </div>
-                  <div className="text-white font-medium flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-[#c8ff3d]" />
+                  <div className="text-text font-medium flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-accent-text" />
                     <span>Nielsen 10 + WCAG 2.2 AAA</span>
                   </div>
                 </div>
                 <div>
-                  <div className="text-zinc-500 uppercase tracking-wider mb-1">
+                  <div className="text-muted uppercase tracking-wider mb-1">
                     PROCESSING LATENCY
                   </div>
-                  <div className="text-white font-medium">1.8s Autonomous Multi-pass</div>
+                  <div className="text-text font-medium">1.8s Autonomous Multi-pass</div>
                 </div>
                 <div>
-                  <div className="text-zinc-500 uppercase tracking-wider mb-1">
+                  <div className="text-muted uppercase tracking-wider mb-1">
                     INTERACTIVE DEMO
                   </div>
                   <button
@@ -294,7 +303,7 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
                       setMenuOpen(false);
                       onOpenDemo();
                     }}
-                    className="text-[#c8ff3d] underline hover:text-white transition-colors text-left cursor-pointer"
+                    className="text-accent-text underline hover:text-text transition-colors text-left cursor-pointer"
                   >
                     Launch 90-sec Video Walkthrough &rarr;
                   </button>
@@ -302,9 +311,9 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
               </motion.div>
             </div>
 
-            <div className="max-w-6xl mx-auto w-full py-6 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-zinc-500">
+            <div className="max-w-6xl mx-auto w-full py-6 border-t border-border flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-muted">
               <div>&copy; 2026 FRICTION SYSTEMS INC. ALL RIGHTS RESERVED.</div>
-              <div className="mt-2 sm:mt-0 text-[#c8ff3d]">
+              <div className="mt-2 sm:mt-0 text-accent-text">
                 &ldquo;DESIGNERS SHOULD DESIGN. AI SHOULD FIND THE FRICTION.&rdquo;
               </div>
             </div>

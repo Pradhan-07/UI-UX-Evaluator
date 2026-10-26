@@ -80,17 +80,17 @@ export function Loader({ onComplete }: { onComplete?: () => void }) {
           initial={{ y: "0%" }}
           exit={{ y: "-100%" }}
           transition={{ duration: 0.65, ease: EASE_PREMIUM }}
-          className="fixed inset-0 z-[9999999] bg-[#08080a] flex flex-col justify-between p-6 sm:p-12 font-mono select-none cursor-pointer"
+          className="fixed inset-0 z-[9999999] bg-bg text-text flex flex-col justify-between p-6 sm:p-12 font-mono select-none cursor-pointer"
         >
           {/* Top Brand Tag */}
-          <div className="flex items-center justify-between text-xs text-zinc-500">
+          <div className="flex items-center justify-between text-xs text-muted">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#c8ff3d] animate-pulse" />
-              <span className="text-zinc-300 font-bold tracking-wider">
-                PROTOLENS // BOOTSTRAP
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <span className="text-text font-bold tracking-wider">
+                FRICTION // BOOTSTRAP
               </span>
             </div>
-            <span className="text-zinc-600">CLICK ANYWHERE TO SKIP</span>
+            <span className="text-muted">CLICK ANYWHERE TO SKIP</span>
           </div>
 
           {/* Center Terminal Logs */}
@@ -100,18 +100,18 @@ export function Loader({ onComplete }: { onComplete?: () => void }) {
                 const isCurrent = idx === currentLineIndex;
                 return (
                   <div key={idx} className="flex items-center gap-2">
-                    <span className="text-zinc-600">&gt;</span>
+                    <span className="text-muted">&gt;</span>
                     <span
                       className={
                         idx === 2
-                          ? "text-[#c8ff3d] font-bold"
-                          : "text-zinc-300"
+                          ? "text-accent-text font-bold"
+                          : "text-text"
                       }
                     >
                       {line}
                     </span>
                     {isCurrent && (
-                      <span className="text-[#c8ff3d] font-bold blink-cursor">_</span>
+                      <span className="text-accent-text font-bold blink-cursor">_</span>
                     )}
                   </div>
                 );
@@ -120,13 +120,13 @@ export function Loader({ onComplete }: { onComplete?: () => void }) {
           </div>
 
           {/* Bottom Counter */}
-          <div className="flex items-end justify-between border-t border-white/[0.08] pt-6">
-            <div className="text-[11px] text-zinc-600">
+          <div className="flex items-end justify-between border-t border-border pt-6">
+            <div className="text-[11px] text-muted">
               AUTONOMOUS COGNITIVE ENGINE V2.4
             </div>
-            <div className="text-4xl sm:text-6xl font-black text-white tracking-tight flex items-baseline">
+            <div className="text-4xl sm:text-6xl font-black text-text tracking-tight flex items-baseline">
               <span>{progress}</span>
-              <span className="text-base sm:text-2xl text-[#c8ff3d] ml-1">%</span>
+              <span className="text-base sm:text-2xl text-accent-text ml-1">%</span>
             </div>
           </div>
         </motion.div>

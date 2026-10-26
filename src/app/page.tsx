@@ -22,7 +22,7 @@ export default function Home() {
   const [demoOpen, setDemoOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#08080a] text-[#f2f2f2] relative selection:bg-[#c8ff3d] selection:text-black">
+    <div className="min-h-screen bg-bg text-text relative selection:bg-accent selection:text-accent-ink">
       {/* Step 1 Session Loader */}
       <Loader />
 

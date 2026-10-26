@@ -455,7 +455,7 @@ export function SectionLabel({
   const fullText = `[${number}] ${label}`;
   return (
     <div
-      className={`inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-zinc-400 mb-4 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.02] ${className}`}
+      className={`inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-muted mb-4 px-3 py-1.5 rounded-full border border-border bg-surface shadow-xs ${className}`}
     >
       <Typewriter text={fullText} speed={25} showCursor={true} />
     </div>

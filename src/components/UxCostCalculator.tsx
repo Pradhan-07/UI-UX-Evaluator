@@ -79,14 +79,14 @@ function SliderRow({
   return (
     <div>
       <div className="flex items-center justify-between mb-2 font-mono">
-        <span className="text-xs text-zinc-400 uppercase tracking-wider">{label}</span>
-        <span className="text-base font-bold text-white">
-          {displayValue} <span className="text-zinc-500 text-xs">{unit}</span>
+        <span className="text-xs text-muted uppercase tracking-wider font-medium">{label}</span>
+        <span className="text-base font-bold text-text">
+          {displayValue} <span className="text-muted text-xs">{unit}</span>
         </span>
       </div>
 
       {/* Custom styled slider with animated fill track */}
-      <div className="relative w-full h-2 bg-zinc-800/80 rounded-full overflow-hidden flex items-center">
+      <div className="relative w-full h-2 bg-surface-2 border border-border rounded-full overflow-hidden flex items-center">
         <motion.div
           className="absolute left-0 top-0 bottom-0 rounded-full"
           style={{ backgroundColor: accentColor }}
@@ -105,7 +105,7 @@ function SliderRow({
         />
       </div>
 
-      <div className="flex justify-between text-[11px] font-mono text-zinc-400 mt-1.5">
+      <div className="flex justify-between text-[11px] font-mono text-muted mt-1.5">
         <span>{minLabel}</span>
         <span>{midLabel}</span>
         <span>{maxLabel}</span>
@@ -173,22 +173,22 @@ export function UxCostCalculator() {
   return (
     <section
       id="calculator"
-      className="py-24 sm:py-32 bg-[#08080a] border-b border-white/[0.08] relative overflow-hidden"
+      className="py-24 sm:py-32 bg-surface/40 border-b border-border relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-white/[0.08]">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-border">
           <div>
             <SectionLabel number="04" label="UX COST CALCULATOR" />
             <Reveal delay={0.1}>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text uppercase">
                 Quantify Your Friction Tax.
               </h2>
             </Reveal>
           </div>
 
           <Reveal delay={0.15}>
-            <div className="font-mono text-xs text-zinc-400 max-w-sm">
+            <div className="font-mono text-xs text-muted max-w-sm">
               EVERY CONFUSING FORM FIELD AND UNREADABLE ERROR MESSAGE HAS A PRECISE DOLLAR VALUE.
             </div>
           </Reveal>
@@ -196,14 +196,14 @@ export function UxCostCalculator() {
 
         {/* Quick Presets Bar */}
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <span className="font-mono text-xs text-zinc-400 uppercase tracking-wider mr-2">
+          <span className="font-mono text-xs text-muted uppercase tracking-wider mr-2 font-medium">
             LOAD INDUSTRY PROFILE:
           </span>
           {presets.map((preset) => (
             <button
               key={preset.name}
               onClick={() => applyPreset(preset)}
-              className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.02] hover:bg-white/[0.06] hover:border-[#c8ff3d]/40 font-mono text-xs text-zinc-300 hover:text-white transition-all cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-2 hover:border-accent-text/40 font-mono text-xs text-text/80 hover:text-text transition-all cursor-pointer shadow-xs"
             >
               {preset.name}
             </button>
@@ -213,7 +213,7 @@ export function UxCostCalculator() {
         {/* Calculator Grid */}
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Sliders & Controls (7 cols) */}
-          <div className="lg:col-span-7 p-6 sm:p-8 rounded-2xl border border-white/[0.08] bg-zinc-950/60 backdrop-blur-sm space-y-8">
+          <div className="lg:col-span-7 p-6 sm:p-8 rounded-2xl border border-border bg-surface shadow-sm space-y-8">
             {/* Input 1: Monthly Visitors */}
             <SliderRow
               label="01 // MONTHLY UNIQUE VISITORS"
@@ -290,20 +290,20 @@ export function UxCostCalculator() {
 
           {/* Right Column: Dynamic Output Card (5 cols) */}
           <div
-            className={`lg:col-span-5 p-6 sm:p-8 rounded-2xl border relative overflow-hidden flex flex-col justify-between transition-colors ${
+            className={`lg:col-span-5 p-6 sm:p-8 rounded-2xl border relative overflow-hidden flex flex-col justify-between transition-colors shadow-md ${
               isHighLoss
-                ? "border-rose-500/40 bg-gradient-to-b from-rose-500/[0.08] to-zinc-950/90"
-                : "border-[#c8ff3d]/30 bg-gradient-to-b from-[#c8ff3d]/[0.05] to-zinc-950/90"
+                ? "border-rose-500/40 bg-gradient-to-b from-rose-500/[0.08] to-surface"
+                : "border-accent-text/30 bg-gradient-to-b from-accent/15 to-surface"
             }`}
           >
             <div>
-              <div className="flex items-center justify-between font-mono text-xs text-zinc-400 pb-4 border-b border-white/[0.08]">
+              <div className="flex items-center justify-between font-mono text-xs text-muted pb-4 border-b border-border">
                 <span
                   className={`uppercase tracking-widest font-bold ${
-                    isHighLoss ? "text-rose-400 flex items-center gap-1.5" : "text-[#c8ff3d]"
+                    isHighLoss ? "text-rose-500 flex items-center gap-1.5" : "text-accent-text"
                   }`}
                 >
-                  {isHighLoss && <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />}
+                  {isHighLoss && <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />}
                   {isHighLoss ? "[HIGH FRICTION ALERT]" : "[AUDIT PROJECTION // REAL-TIME]"}
                 </span>
                 <span>FORMULA: CRO-V2</span>
@@ -313,7 +313,7 @@ export function UxCostCalculator() {
               <div className="mt-8">
                 <div
                   className={`font-mono text-xs uppercase tracking-wider flex items-center gap-1.5 mb-2 ${
-                    isHighLoss ? "text-rose-400 font-bold" : "text-zinc-400"
+                    isHighLoss ? "text-rose-500 font-bold" : "text-muted"
                   }`}
                 >
                   <TrendingDown className="w-3.5 h-3.5" />
@@ -326,41 +326,41 @@ export function UxCostCalculator() {
                     isHighLoss && !prefersReduced
                       ? {
                           scale: [1, 1.02, 1],
-                          color: ["#ffffff", "#f87171", "#ffffff"],
+                          color: ["var(--text)", "#e11d48", "var(--text)"],
                         }
-                      : { scale: 1, color: "#ffffff" }
+                      : { scale: 1, color: "var(--text)" }
                   }
                   transition={{
                     repeat: Infinity,
                     duration: 1.5,
                     ease: "easeInOut",
                   }}
-                  className="text-4xl sm:text-5xl lg:text-6xl font-black font-mono tracking-tight will-change-transform"
+                  className="text-4xl sm:text-5xl lg:text-6xl font-black font-mono tracking-tight will-change-transform text-text"
                 >
                   <TweenNumber value={calculation.monthlyLostRevenue} prefix="$" />
-                  <span className="text-sm font-normal text-zinc-400 block sm:inline sm:ml-2">
+                  <span className="text-sm font-normal text-muted block sm:inline sm:ml-2">
                     / month
                   </span>
                 </motion.div>
               </div>
 
               {/* Breakdown Rows */}
-              <div className="mt-8 space-y-3 font-mono text-xs pt-6 border-t border-white/[0.08]">
-                <div className="flex justify-between py-1 text-zinc-400">
+              <div className="mt-8 space-y-3 font-mono text-xs pt-6 border-t border-border">
+                <div className="flex justify-between py-1 text-muted">
                   <span>Annualized Friction Penalty:</span>
-                  <span className="text-rose-400 font-bold">
+                  <span className="text-rose-500 font-bold">
                     <TweenNumber value={calculation.annualLostRevenue} prefix="$" suffix=" / yr" />
                   </span>
                 </div>
-                <div className="flex justify-between py-1 text-zinc-400">
+                <div className="flex justify-between py-1 text-muted">
                   <span>Lost Paying Customers:</span>
-                  <span className="text-zinc-200 font-bold">
+                  <span className="text-text font-bold">
                     <TweenNumber value={calculation.lostOrders} suffix=" users / mo" />
                   </span>
                 </div>
-                <div className="flex justify-between py-1 text-zinc-400">
+                <div className="flex justify-between py-1 text-muted">
                   <span>30-Day Recoverable Revenue (Est.):</span>
-                  <span className="text-[#c8ff3d] font-bold">
+                  <span className="text-accent-text font-bold">
                     +<TweenNumber value={calculation.recoverableRevenue} prefix="$" suffix=" / mo" />
                   </span>
                 </div>
@@ -368,13 +368,13 @@ export function UxCostCalculator() {
 
               {/* Visual Leakage Bar */}
               <div className="mt-6">
-                <div className="flex justify-between text-[11px] font-mono text-zinc-500 mb-1.5">
+                <div className="flex justify-between text-[11px] font-mono text-muted mb-1.5">
                   <span>CAPTURED REVENUE</span>
-                  <span className="text-rose-400">LOST TO FRICTION ({dropoff}%)</span>
+                  <span className="text-rose-500 font-bold">LOST TO FRICTION ({dropoff}%)</span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-zinc-800 overflow-hidden flex">
+                <div className="w-full h-2 rounded-full bg-surface-2 border border-border overflow-hidden flex">
                   <motion.div
-                    className="h-full bg-zinc-400"
+                    className="h-full bg-text/70"
                     initial={false}
                     animate={{ width: `${100 - dropoff}%` }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -390,11 +390,11 @@ export function UxCostCalculator() {
             </div>
 
             {/* Action CTA */}
-            <div className="mt-8 pt-6 border-t border-white/[0.08]">
+            <div className="mt-8 pt-6 border-t border-border">
               <Magnetic intensity={0.15} className="w-full">
                 <button
                   onClick={scrollToAnalyzer}
-                  className="w-full py-4 rounded-xl font-mono text-xs sm:text-sm font-bold uppercase tracking-wider bg-[#c8ff3d] text-black hover:bg-[#d4ff5e] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(200,255,61,0.2)]"
+                  className="w-full py-4 rounded-xl font-mono text-xs sm:text-sm font-bold uppercase tracking-wider bg-accent text-accent-ink hover:bg-[#d4ff5e] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
                 >
                   <span>Eliminate this friction &rarr; Run Live Analyzer</span>
                 </button>

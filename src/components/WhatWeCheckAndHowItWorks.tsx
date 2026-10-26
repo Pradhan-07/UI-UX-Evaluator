@@ -176,12 +176,12 @@ function StepDot({
       <div
         className={`w-4 h-4 rounded-full border-2 transition-all duration-300 ${
           lit
-            ? "border-[#c8ff3d] bg-[#c8ff3d] shadow-[0_0_14px_#c8ff3d]"
-            : "border-zinc-700 bg-zinc-900"
+            ? "border-accent bg-accent shadow-[0_0_14px_rgba(200,255,61,0.6)]"
+            : "border-border bg-surface-2"
         }`}
       />
       {lit && (
-        <div className="absolute w-7 h-7 rounded-full bg-[#c8ff3d]/20 animate-ping pointer-events-none" />
+        <div className="absolute w-7 h-7 rounded-full bg-accent/20 animate-ping pointer-events-none" />
       )}
     </div>
   );
@@ -203,28 +203,28 @@ export function WhatWeCheckAndHowItWorks() {
   };
 
   return (
-    <div className="bg-[#08080a] border-b border-white/[0.08]">
+    <div className="bg-bg border-b border-border">
       {/* ========================================================================= */}
       {/* FRAME 8: WHAT WE CHECK */}
       {/* ========================================================================= */}
       <section
         id="what-we-check"
-        className="py-24 sm:py-32 border-b border-white/[0.08] relative overflow-hidden"
+        className="py-24 sm:py-32 border-b border-border relative overflow-hidden"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-white/[0.08]">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-border">
             <div>
               <SectionLabel number="05B" label="WHAT WE CHECK // AUDIT SCOPE" />
               <Reveal delay={0.1}>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text uppercase">
                   Comprehensive UX Audit Coverage.
                 </h2>
               </Reveal>
             </div>
 
             <Reveal delay={0.15}>
-              <div className="font-mono text-xs text-zinc-400 max-w-sm">
+              <div className="font-mono text-xs text-muted max-w-sm">
                 5 SPECIALIZED INSPECTION LAYERS AUDITED CONCURRENTLY ON EVERY FLOW.
               </div>
             </Reveal>
@@ -247,38 +247,38 @@ export function WhatWeCheckAndHowItWorks() {
                       ease: EASE_PREMIUM,
                     }}
                     style={{ transformOrigin: "left" }}
-                    className="h-[1px] bg-white/[0.08] w-full"
+                    className="h-[1px] bg-border w-full"
                   />
 
                   {/* Row Header Button */}
                   <button
                     onClick={() => toggleRow(cat.num)}
-                    className="w-full py-6 sm:py-7 flex flex-col md:flex-row md:items-center justify-between gap-4 text-left cursor-pointer transition-colors hover:bg-white/[0.015] px-3 sm:px-4 rounded-lg"
+                    className="w-full py-6 sm:py-7 flex flex-col md:flex-row md:items-center justify-between gap-4 text-left cursor-pointer transition-colors hover:bg-surface-2/60 px-3 sm:px-4 rounded-lg"
                   >
                     <div className="flex items-start sm:items-center gap-4 sm:gap-6">
                       {/* Sliding row number */}
-                      <span className="font-mono text-sm sm:text-base text-[#c8ff3d] font-bold transition-transform duration-300 group-hover:translate-x-2">
+                      <span className="font-mono text-sm sm:text-base text-accent-text font-bold transition-transform duration-300 group-hover:translate-x-2">
                         [{cat.num}]
                       </span>
                       <div>
-                        <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white group-hover:text-[#c8ff3d] transition-colors">
+                        <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-text group-hover:text-accent-text transition-colors">
                           {cat.title}
                         </h3>
-                        <p className="text-xs sm:text-sm text-zinc-400 font-sans mt-0.5 line-clamp-1">
+                        <p className="text-xs sm:text-sm text-muted font-sans mt-0.5 line-clamp-1">
                           {cat.summary}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-4 self-end md:self-auto shrink-0">
-                      <span className="font-mono text-xs text-zinc-400 px-2.5 py-1 rounded bg-white/[0.03] border border-white/[0.08]">
+                      <span className="font-mono text-xs text-muted px-2.5 py-1 rounded bg-surface-2 border border-border">
                         {cat.metrics}
                       </span>
                       <div
-                        className={`w-7 h-7 rounded-full border border-white/10 flex items-center justify-center transition-transform duration-300 ${
+                        className={`w-7 h-7 rounded-full border border-border flex items-center justify-center transition-transform duration-300 ${
                           isOpen
-                            ? "rotate-180 bg-[#c8ff3d] text-black border-[#c8ff3d]"
-                            : "text-zinc-400 group-hover:text-white"
+                            ? "rotate-180 bg-accent text-accent-ink border-accent"
+                            : "bg-surface-2 text-muted group-hover:text-text"
                         }`}
                       >
                         <ChevronDown className="w-3.5 h-3.5" />
@@ -297,34 +297,34 @@ export function WhatWeCheckAndHowItWorks() {
                         className="overflow-hidden"
                       >
                         <div className="px-4 pb-7 pt-1 sm:pl-16">
-                          <div className="p-6 rounded-xl border border-white/[0.08] bg-zinc-950/70 grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="p-6 rounded-xl border border-border bg-surface shadow-md grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                              <div className="font-mono text-xs text-[#c8ff3d] uppercase tracking-wider mb-2 font-bold flex items-center gap-1.5">
-                                <ShieldCheck className="w-3.5 h-3.5 text-[#c8ff3d]" />
+                              <div className="font-mono text-xs text-accent-text uppercase tracking-wider mb-2 font-bold flex items-center gap-1.5">
+                                <ShieldCheck className="w-3.5 h-3.5 text-accent-text" />
                                 <span>CRITICAL HEURISTICS VALIDATED</span>
                               </div>
-                              <ul className="space-y-2 mt-3 font-mono text-xs text-zinc-300">
+                              <ul className="space-y-2 mt-3 font-mono text-xs text-text/90">
                                 {cat.heuristics.map((h, hIdx) => (
                                   <li key={hIdx} className="flex items-start gap-2">
-                                    <span className="text-[#c8ff3d] font-bold">✦</span>
+                                    <span className="text-accent-text font-bold">✦</span>
                                     <span>{h}</span>
                                   </li>
                                 ))}
                               </ul>
                             </div>
 
-                            <div className="border-t md:border-t-0 md:border-l border-white/[0.08] md:pl-6 flex flex-col justify-between">
+                            <div className="border-t md:border-t-0 md:border-l border-border md:pl-6 flex flex-col justify-between">
                               <div>
-                                <div className="font-mono text-xs text-zinc-400 uppercase tracking-wider mb-2 font-bold">
+                                <div className="font-mono text-xs text-muted uppercase tracking-wider mb-2 font-bold">
                                   WHY THIS BLOCKS CONVERSIONS
                                 </div>
-                                <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed">
+                                <p className="text-xs sm:text-sm text-text/90 font-sans leading-relaxed">
                                   {cat.summary}
                                 </p>
                               </div>
-                              <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between font-mono text-[11px] text-zinc-500">
+                              <div className="mt-4 pt-3 border-t border-border flex items-center justify-between font-mono text-[11px] text-muted">
                                 <span>TELEMETRY: AUTOMATED</span>
-                                <span className="text-[#c8ff3d]">{cat.metrics}</span>
+                                <span className="text-accent-text font-bold">{cat.metrics}</span>
                               </div>
                             </div>
                           </div>
@@ -343,7 +343,7 @@ export function WhatWeCheckAndHowItWorks() {
               viewport={VIEWPORT}
               transition={{ duration: 0.6, delay: 0.45, ease: EASE_PREMIUM }}
               style={{ transformOrigin: "left" }}
-              className="h-[1px] bg-white/[0.08] w-full"
+              className="h-[1px] bg-border w-full"
             />
           </div>
         </div>
@@ -359,18 +359,18 @@ export function WhatWeCheckAndHowItWorks() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-white/[0.08] mb-16">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-border mb-16">
             <div>
               <SectionLabel number="05C" label="HOW IT WORKS // PIPELINE" />
               <Reveal delay={0.1}>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text uppercase">
                   From Prototype to Engineering Diff.
                 </h2>
               </Reveal>
             </div>
 
             <Reveal delay={0.15}>
-              <div className="font-mono text-xs text-zinc-400 max-w-sm">
+              <div className="font-mono text-xs text-muted max-w-sm">
                 4-STAGE AUTONOMOUS PROCESSING PIPELINE WITH SUB-2 SECOND TURNAROUND.
               </div>
             </Reveal>
@@ -387,7 +387,7 @@ export function WhatWeCheckAndHowItWorks() {
                   y1="0"
                   x2="16"
                   y2="800"
-                  stroke="rgba(255,255,255,0.08)"
+                  stroke="var(--border)"
                   strokeWidth="2"
                   strokeDasharray="4 4"
                 />
@@ -397,7 +397,7 @@ export function WhatWeCheckAndHowItWorks() {
                   y1="0"
                   x2="16"
                   y2="800"
-                  stroke="#c8ff3d"
+                  stroke="var(--accent)"
                   strokeWidth="2"
                   style={
                     prefersReduced
@@ -443,20 +443,20 @@ export function WhatWeCheckAndHowItWorks() {
                           delay: 0.1,
                           ease: EASE_PREMIUM,
                         }}
-                        className="p-7 rounded-2xl border border-white/[0.08] bg-zinc-950/70 hover:border-white/20 transition-all group"
+                        className="p-7 rounded-2xl border border-border bg-surface hover:border-accent-text/40 shadow-sm hover:shadow-md transition-all group"
                       >
                         <div className="flex items-center justify-between mb-4">
-                          <span className="font-mono text-xs text-[#c8ff3d] font-bold">
+                          <span className="font-mono text-xs text-accent-text font-bold">
                             [{step.num}] {step.category}
                           </span>
-                          <span className="font-mono text-[10px] text-zinc-500 bg-white/[0.03] px-2 py-0.5 rounded border border-white/[0.06]">
+                          <span className="font-mono text-[10px] text-muted bg-surface-2 px-2 py-0.5 rounded border border-border">
                             {step.tag}
                           </span>
                         </div>
-                        <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight group-hover:text-[#c8ff3d] transition-colors mb-2">
+                        <h3 className="text-xl sm:text-2xl font-bold text-text tracking-tight group-hover:text-accent-text transition-colors mb-2">
                           {step.title}
                         </h3>
-                        <p className="text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed">
+                        <p className="text-xs sm:text-sm text-muted font-sans leading-relaxed">
                           {step.desc}
                         </p>
                       </motion.div>
@@ -477,7 +477,7 @@ export function WhatWeCheckAndHowItWorks() {
                         isEven ? "lg:order-3" : "lg:order-1"
                       }`}
                     >
-                      <div className="flex items-center justify-center p-6 text-zinc-700 font-mono text-xs opacity-40">
+                      <div className="flex items-center justify-center p-6 text-muted/30 font-mono text-xs">
                         <Icon className="w-8 h-8 stroke-[1.2]" />
                       </div>
                     </div>

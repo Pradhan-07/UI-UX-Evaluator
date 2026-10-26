@@ -69,40 +69,40 @@ export function FaqSection() {
   return (
     <section
       id="faq"
-      className="py-24 sm:py-32 bg-[#08080a] border-b border-white/[0.08] relative overflow-hidden"
+      className="py-24 sm:py-32 bg-surface/50 border-b border-border relative overflow-hidden"
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
           <SectionLabel number="08" label="FREQUENTLY ASKED QUESTIONS" />
           <Reveal delay={0.1}>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase mt-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text uppercase mt-2">
               Autonomous UX Intelligence FAQ.
             </h2>
           </Reveal>
           <Reveal delay={0.15}>
-            <p className="mt-4 text-xs sm:text-sm font-mono text-zinc-400">
+            <p className="mt-4 text-xs sm:text-sm font-mono text-muted">
               ANSWERS ON COGNITIVE SACCADES, HEURISTIC ENGINES, AND COMPONENT REMEDIATIONS.
             </p>
           </Reveal>
         </div>
 
         {/* Smooth Accordion List */}
-        <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+        <div className="divide-y divide-border border-y border-border">
           {faqs.map((faq) => {
             const isOpen = openId === faq.id;
 
             return (
-              <div key={faq.id} className="transition-colors hover:bg-white/[0.01]">
+              <div key={faq.id} className="transition-colors hover:bg-surface-2/60">
                 <button
                   onClick={() => toggleFaq(faq.id)}
                   className="w-full py-6 sm:py-8 flex items-center justify-between gap-4 text-left cursor-pointer group"
                 >
                   <div className="flex items-center gap-4 sm:gap-6 pr-4">
-                    <span className="font-mono text-xs sm:text-sm text-[#c8ff3d] font-bold shrink-0">
+                    <span className="font-mono text-xs sm:text-sm text-accent-text font-bold shrink-0">
                       [{faq.num}]
                     </span>
-                    <span className="text-base sm:text-lg md:text-xl font-bold text-white group-hover:text-[#c8ff3d] transition-colors">
+                    <span className="text-base sm:text-lg md:text-xl font-bold text-text group-hover:text-accent-text transition-colors">
                       {faq.question}
                     </span>
                   </div>
@@ -111,10 +111,10 @@ export function FaqSection() {
                   <motion.div
                     animate={prefersReduced ? {} : { rotate: isOpen ? 45 : 0 }}
                     transition={{ duration: 0.3, ease: EASE_PREMIUM }}
-                    className={`w-8 h-8 rounded-full border border-white/10 flex items-center justify-center shrink-0 transition-colors ${
+                    className={`w-8 h-8 rounded-full border border-border flex items-center justify-center shrink-0 transition-colors ${
                       isOpen
-                        ? "bg-[#c8ff3d] text-black border-[#c8ff3d]"
-                        : "text-zinc-400 group-hover:text-white group-hover:border-white/30"
+                        ? "bg-accent text-accent-ink border-accent"
+                        : "bg-surface-2 text-muted group-hover:text-text group-hover:border-accent-text/40"
                     }`}
                   >
                     <Plus className="w-4 h-4 stroke-[2.5]" />
@@ -138,10 +138,10 @@ export function FaqSection() {
                         transition={{ duration: 0.3, delay: 0.05 }}
                         className="pb-7 pl-9 sm:pl-14 pr-4"
                       >
-                        <div className="font-mono text-[10px] text-[#c8ff3d] uppercase tracking-wider mb-2 font-bold">
+                        <div className="font-mono text-[10px] text-accent-text uppercase tracking-wider mb-2 font-bold">
                           CATEGORY // {faq.category}
                         </div>
-                        <p className="text-sm sm:text-base font-sans text-zinc-300 font-light leading-relaxed">
+                        <p className="text-sm sm:text-base font-sans text-text/90 font-light leading-relaxed">
                           {faq.answer}
                         </p>
                       </motion.div>

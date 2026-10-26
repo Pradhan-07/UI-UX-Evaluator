@@ -61,7 +61,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
       id="hero"
       ref={sectionRef}
       onPointerMove={handlePointerMove}
-      className="relative min-h-[92vh] pt-28 pb-16 flex flex-col justify-between overflow-hidden border-b border-white/[0.08]"
+      className="relative min-h-[92vh] pt-28 pb-16 flex flex-col justify-between overflow-hidden border-b border-border"
     >
       {/* Background Subtle Grid */}
       <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none" />
@@ -71,7 +71,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
         className="pointer-events-none absolute inset-0 opacity-70 transition-opacity duration-500 hidden md:block"
         style={{
           background:
-            "radial-gradient(600px circle at var(--hx, 50%) var(--hy, 30%), rgba(200, 255, 61, 0.05), transparent 70%)",
+            "radial-gradient(600px circle at var(--hx, 50%) var(--hy, 30%), var(--glow), transparent 70%)",
         }}
         aria-hidden="true"
       />
@@ -85,30 +85,30 @@ export function Hero({ onOpenDemo }: HeroProps) {
               initial={shouldAnimate ? { opacity: 0, y: 12 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-zinc-400 mb-6 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.02]"
+              className="inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-muted mb-6 px-3 py-1.5 rounded-full border border-border bg-surface"
             >
-              <span className="text-[#c8ff3d] font-bold">[01]</span>
-              <span className="tracking-wider uppercase text-zinc-300">
+              <span className="text-accent-text font-bold">[01]</span>
+              <span className="tracking-wider uppercase text-text">
                 AUTONOMOUS UX AUDIT ENGINE
               </span>
-              <span className="text-[#c8ff3d] font-bold blink-cursor">_</span>
+              <span className="text-accent-text font-bold blink-cursor">_</span>
             </motion.div>
 
             {/* Headline with SplitText line mask reveal & Scrambled keyword */}
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight leading-[0.95] text-white">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight leading-[0.95] text-text">
               {/* Line 1: FIND THE FRICTION_ */}
               <span className="block overflow-hidden">
                 <motion.span
                   initial={shouldAnimate ? { y: "110%" } : false}
                   animate={{ y: "0%" }}
                   transition={{ duration: 0.7, ease: EASE_PREMIUM }}
-                  className="block"
+                  className="block whitespace-nowrap"
                 >
                   <span>FIND THE </span>
-                  <span className="text-[#c8ff3d]">
+                  <span className="text-accent-text">
                     <ScrambleText text="FRICTION" duration={700} />
                   </span>
-                  <span className="text-[#c8ff3d] blink-cursor">_</span>
+                  <span className="text-accent-text blink-cursor">_</span>
                 </motion.span>
               </span>
 
@@ -120,10 +120,10 @@ export function Hero({ onOpenDemo }: HeroProps) {
                   transition={{ duration: 0.7, delay: 0.1, ease: EASE_PREMIUM }}
                   className="inline-flex items-baseline flex-wrap gap-x-4 gap-y-1"
                 >
-                  <span className="font-mono text-3xl sm:text-5xl md:text-6xl text-[#c8ff3d] tracking-normal font-normal">
+                  <span className="font-mono text-3xl sm:text-5xl md:text-6xl text-accent-text tracking-normal font-normal">
                     [10X]
                   </span>
-                  <span className="text-zinc-200">SHIP THE FIX.</span>
+                  <span className="text-text">SHIP THE FIX.</span>
                 </motion.span>
               </span>
             </h1>
@@ -133,7 +133,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
               initial={shouldAnimate ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.25 }}
-              className="mt-8 text-lg sm:text-xl text-zinc-400 max-w-xl font-light leading-relaxed"
+              className="mt-8 text-lg sm:text-xl text-muted max-w-xl font-light leading-relaxed"
             >
               Upload screenshots or a user journey. Get usability issues, impact, and concrete fixes in seconds.
             </motion.p>
@@ -149,10 +149,10 @@ export function Hero({ onOpenDemo }: HeroProps) {
               <Magnetic intensity={0.2}>
                 <button
                   onClick={scrollToAnalyzer}
-                  className="group relative inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl font-mono text-sm font-bold uppercase tracking-wider bg-[#c8ff3d] text-black hover:bg-[#d6ff5e] transition-all shadow-[0_0_24px_rgba(200,255,61,0.25)] hover:shadow-[0_0_36px_rgba(200,255,61,0.45)] cursor-pointer"
+                  className="group relative inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl font-mono text-sm font-bold uppercase tracking-wider bg-accent text-accent-ink hover:bg-[#d6ff5e] transition-all shadow-[0_0_24px_rgba(200,255,61,0.25)] hover:shadow-[0_0_36px_rgba(200,255,61,0.45)] cursor-pointer"
                 >
                   <span>Analyze my app</span>
-                  <span className="text-black font-extrabold group-hover:translate-x-1 transition-transform">
+                  <span className="text-accent-ink font-extrabold group-hover:translate-x-1 transition-transform">
                     &rarr;
                   </span>
                 </button>
@@ -165,9 +165,9 @@ export function Hero({ onOpenDemo }: HeroProps) {
                     playMicroClick(1000);
                     onOpenDemo();
                   }}
-                  className="group inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl font-mono text-sm font-medium tracking-wide bg-white/[0.03] text-white border border-white/15 hover:border-white/30 hover:bg-white/[0.08] transition-all cursor-pointer"
+                  className="group inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl font-mono text-sm font-medium tracking-wide bg-surface text-text border border-border hover:border-accent-text hover:bg-surface-2 transition-all cursor-pointer"
                 >
-                  <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#c8ff3d] group-hover:text-black transition-colors">
+                  <div className="w-6 h-6 rounded-full bg-surface-2 flex items-center justify-center group-hover:bg-accent group-hover:text-accent-ink transition-colors">
                     <Play className="w-3 h-3 fill-current ml-0.5" />
                   </div>
                   <span>Watch 90-sec demo</span>
@@ -182,16 +182,16 @@ export function Hero({ onOpenDemo }: HeroProps) {
               initial={shouldAnimate ? { opacity: 0, y: 30, scale: 0.96 } : false}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.3, ease: EASE_PREMIUM }}
-              className="relative w-full max-w-[320px] rounded-[36px] p-3 bg-gradient-to-b from-white/15 to-white/5 border border-white/20 shadow-2xl backdrop-blur-md"
+              className="relative w-full max-w-[320px] rounded-[36px] p-3 bg-surface border border-border shadow-xl backdrop-blur-md"
             >
-              {/* Phone Inner Bezel & Screen */}
-              <div className="relative aspect-[9/18] w-full rounded-[28px] bg-black overflow-hidden border border-white/10 flex flex-col justify-between">
+              {/* Phone Inner Bezel & Screen (realistic mobile device) */}
+              <div className="relative aspect-[9/18] w-full rounded-[28px] bg-zinc-950 overflow-hidden border border-border flex flex-col justify-between shadow-inner">
                 {/* Simulated Screen Image */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/samples/checkout.jpg"
                   alt="App interface preview"
-                  className="w-full h-full object-cover pointer-events-none opacity-85"
+                  className="w-full h-full object-cover pointer-events-none opacity-90"
                 />
 
                 {/* Sweeping Lime Laser Scan Line (top -> bottom infinite or smooth) */}
@@ -228,7 +228,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
                         playPinSelect();
                         setActiveHeroPin(activeHeroPin === pin.id ? null : pin.id);
                       }}
-                      className={`relative w-7 h-7 rounded-full font-mono text-xs font-black flex items-center justify-center text-black transition-transform group-hover:scale-125 cursor-pointer shadow-lg ${
+                      className={`relative w-7 h-7 rounded-full font-mono text-xs font-black flex items-center justify-center text-zinc-950 transition-transform group-hover:scale-125 cursor-pointer shadow-lg ${
                         pin.severity === "critical"
                           ? "bg-rose-500 text-white shadow-[0_0_12px_rgba(244,63,94,0.7)]"
                           : pin.color
@@ -237,7 +237,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
                       <span>0{pin.id}</span>
 
                       {/* Small Mono Tooltip */}
-                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 rounded bg-zinc-950/95 border border-white/20 text-[10px] font-mono whitespace-nowrap text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
+                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 rounded-md bg-surface border border-border text-[10px] font-mono whitespace-nowrap text-text opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
                         {pin.label}
                       </span>
                     </button>
@@ -245,17 +245,17 @@ export function Hero({ onOpenDemo }: HeroProps) {
                 ))}
 
                 {/* Top Status Bar Notch */}
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-4 bg-black/80 rounded-full border border-white/10 flex items-center justify-center z-30">
-                  <span className="w-2 h-2 rounded-full bg-[#c8ff3d] animate-ping" />
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-4 bg-zinc-950/80 rounded-full border border-white/10 flex items-center justify-center z-30">
+                  <span className="w-2 h-2 rounded-full bg-accent animate-ping" />
                 </div>
 
                 {/* Bottom telemetry overlay pill */}
-                <div className="absolute bottom-3 left-3 right-3 p-2 rounded-xl bg-zinc-950/90 border border-white/10 backdrop-blur-md flex items-center justify-between text-[10px] font-mono text-zinc-400 z-30">
-                  <span className="text-[#c8ff3d] flex items-center gap-1 font-bold">
-                    <Sparkles className="w-3 h-3" />
+                <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-xl bg-surface/95 border border-border backdrop-blur-md flex items-center justify-between text-[10px] font-mono text-muted z-30 shadow-md">
+                  <span className="text-accent-text flex items-center gap-1 font-bold">
+                    <Sparkles className="w-3 h-3 text-accent-text" />
                     <span>3 ISSUES PINNED</span>
                   </span>
-                  <span>1.8s TURNAROUND</span>
+                  <span className="text-muted font-medium">1.8s TURNAROUND</span>
                 </div>
               </div>
             </motion.div>
@@ -267,29 +267,29 @@ export function Hero({ onOpenDemo }: HeroProps) {
           initial={shouldAnimate ? { opacity: 0 } : false}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.45 }}
-          className="mt-14 pt-8 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-zinc-400"
+          className="mt-14 pt-8 border-t border-border flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-muted"
         >
           <div className="flex flex-wrap items-center gap-3 sm:gap-6">
-            <span className="inline-flex items-center gap-2 text-zinc-300">
-              <span className="w-2 h-2 rounded-full bg-[#c8ff3d] animate-ping" />
+            <span className="inline-flex items-center gap-2 text-text">
+              <span className="w-2 h-2 rounded-full bg-accent animate-ping" />
               <span>LIVE ANALYSIS</span>
             </span>
-            <span className="text-zinc-600">/</span>
-            <span className="text-zinc-300">2026 EDITION</span>
-            <span className="text-zinc-600">/</span>
-            <span className="text-zinc-300 flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#c8ff3d]" />
+            <span className="text-muted">/</span>
+            <span className="text-text">2026 EDITION</span>
+            <span className="text-muted">/</span>
+            <span className="text-text flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-accent-text" />
               BUILT ON NIELSEN HEURISTICS + WCAG 2.2
             </span>
           </div>
 
-          <div className="hidden lg:flex items-center gap-2 text-[11px] text-zinc-500">
+          <div className="hidden lg:flex items-center gap-2 text-[11px] text-muted">
             <span>PRESS</span>
-            <kbd className="px-1.5 py-0.5 rounded bg-zinc-900 border border-white/20 text-zinc-300 font-mono">
+            <kbd className="px-1.5 py-0.5 rounded bg-surface-2 border border-border text-text font-mono">
               SPACE
             </kbd>
             <span>OR SCROLL DOWN TO EXPLORE</span>
-            <ArrowDown className="w-3 h-3 animate-bounce text-[#c8ff3d]" />
+            <ArrowDown className="w-3 h-3 animate-bounce text-accent-text" />
           </div>
         </motion.div>
       </div>

@@ -361,25 +361,25 @@ export function LiveAnalyzer() {
     switch (sev) {
       case "critical":
         return {
-          bg: "bg-rose-500/10 text-rose-400 border-rose-500/30",
+          bg: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30",
           icon: AlertOctagon,
           label: "CRITICAL",
         };
       case "high":
         return {
-          bg: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+          bg: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30",
           icon: AlertTriangle,
           label: "HIGH",
         };
       case "medium":
         return {
-          bg: "bg-[#c8ff3d]/10 text-[#c8ff3d] border-[#c8ff3d]/30",
+          bg: "bg-accent/15 text-accent-text border-accent/40",
           icon: Info,
           label: "MEDIUM",
         };
       case "low":
         return {
-          bg: "bg-zinc-500/10 text-zinc-400 border-zinc-500/30",
+          bg: "bg-surface-2 text-muted border-border",
           icon: Info,
           label: "LOW",
         };
@@ -393,15 +393,15 @@ export function LiveAnalyzer() {
   return (
     <section
       id="analyzer"
-      className="py-24 sm:py-32 bg-[#08080a] border-b border-white/[0.08] relative"
+      className="py-24 sm:py-32 bg-bg border-b border-border relative"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/[0.08]">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-border">
           <div>
             <SectionLabel number="05" label="LIVE ANALYZER // THE CORE" />
             <Reveal delay={0.1}>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text uppercase">
                 Autonomous Usability Evaluation.
               </h2>
             </Reveal>
@@ -409,29 +409,29 @@ export function LiveAnalyzer() {
 
           {/* Backend Status indicator */}
           <div className="flex flex-col sm:items-end gap-2 font-mono text-xs">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-zinc-950">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface shadow-sm">
               <span
                 className={`w-2 h-2 rounded-full ${
-                  backendHealth ? "bg-[#c8ff3d] animate-pulse" : "bg-zinc-600"
+                  backendHealth ? "bg-accent animate-pulse" : "bg-muted/50"
                 }`}
               />
-              <span className="text-zinc-300 font-bold">
+              <span className="text-text font-bold">
                 {backendHealth
                   ? `BACKEND: ${backendHealth.ai.toUpperCase()} (${backendHealth.model})`
                   : "PROTOLENS BACKEND: PORT 5001 READY"}
               </span>
             </div>
-            <span className="text-zinc-500 text-[11px]">
+            <span className="text-muted text-[11px]">
               DROP APP SCREENSHOTS OR PASTE A USER JOURNEY TO ISOLATE FRICTION.
             </span>
           </div>
         </div>
 
         {/* 1-Click Quick Presets Bar */}
-        <div className="mt-8 p-4 rounded-xl border border-white/[0.08] bg-zinc-950/60 flex flex-wrap items-center justify-between gap-4">
+        <div className="mt-8 p-4 rounded-xl border border-border bg-surface flex flex-wrap items-center justify-between gap-4 shadow-sm">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-xs text-zinc-400 uppercase tracking-wider mr-2 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#c8ff3d]" />
+            <span className="font-mono text-xs text-muted uppercase tracking-wider mr-2 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-accent-text" />
               <span>TEST SAMPLE FLOWS:</span>
             </span>
             {AUDIT_PRESETS.map((preset) => {
@@ -442,8 +442,8 @@ export function LiveAnalyzer() {
                   onClick={() => handleSelectPreset(preset)}
                   className={`px-3 py-1.5 rounded-lg font-mono text-xs transition-all cursor-pointer ${
                     isSelected
-                      ? "bg-[#c8ff3d] text-black font-bold shadow-[0_0_15px_rgba(200,255,61,0.3)]"
-                      : "bg-white/[0.03] text-zinc-300 hover:text-white border border-white/10 hover:border-white/20"
+                      ? "bg-accent text-accent-ink font-bold shadow-[0_0_15px_rgba(200,255,61,0.3)]"
+                      : "bg-surface-2 text-muted hover:text-text border border-border hover:border-accent-text/40"
                   }`}
                 >
                   {preset.name}
@@ -452,19 +452,19 @@ export function LiveAnalyzer() {
             })}
           </div>
 
-          <div className="font-mono text-xs text-zinc-400 flex items-center gap-2">
+          <div className="font-mono text-xs text-muted flex items-center gap-2">
             <span>INPUT:</span>
-            <span className="text-white uppercase font-bold">{inputMode}</span>
+            <span className="text-text uppercase font-bold">{inputMode}</span>
           </div>
         </div>
 
         {/* Input Configuration Drawer */}
-        <div className="mt-6 p-6 sm:p-8 rounded-2xl border border-white/[0.08] bg-zinc-950/80">
+        <div className="mt-6 p-6 sm:p-8 rounded-2xl border border-border bg-surface shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Mode Selector & Dropzone (7 cols) */}
             <div className="lg:col-span-7 space-y-6">
               {/* Mode Toggle Tabs */}
-              <div className="flex items-center gap-3 border-b border-white/[0.08] pb-4">
+              <div className="flex items-center gap-3 border-b border-border pb-4">
                 <button
                   onClick={() => {
                     playMicroClick();
@@ -472,8 +472,8 @@ export function LiveAnalyzer() {
                   }}
                   className={`flex items-center gap-2 font-mono text-xs uppercase tracking-wider pb-1 transition-colors cursor-pointer ${
                     inputMode === "screenshot"
-                      ? "text-[#c8ff3d] border-b-2 border-[#c8ff3d] font-bold"
-                      : "text-zinc-400 hover:text-white"
+                      ? "text-accent-text border-b-2 border-accent font-bold"
+                      : "text-muted hover:text-text"
                   }`}
                 >
                   <Upload className="w-4 h-4" />
@@ -487,8 +487,8 @@ export function LiveAnalyzer() {
                   }}
                   className={`flex items-center gap-2 font-mono text-xs uppercase tracking-wider pb-1 transition-colors cursor-pointer ${
                     inputMode === "journey"
-                      ? "text-[#c8ff3d] border-b-2 border-[#c8ff3d] font-bold"
-                      : "text-zinc-400 hover:text-white"
+                      ? "text-accent-text border-b-2 border-accent font-bold"
+                      : "text-muted hover:text-text"
                   }`}
                 >
                   <FileText className="w-4 h-4" />
@@ -527,14 +527,14 @@ export function LiveAnalyzer() {
                     transition={{ repeat: Infinity, duration: 1.2 }}
                     className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors group overflow-hidden ${
                       isDraggingOver
-                        ? "border-[#c8ff3d] bg-[#c8ff3d]/[0.08]"
-                        : "border-white/15 hover:border-[#c8ff3d]/60 bg-white/[0.015] hover:bg-white/[0.03]"
+                        ? "border-accent bg-accent/[0.08]"
+                        : "border-border hover:border-accent-text/60 bg-surface-2 hover:bg-surface"
                     }`}
                   >
                     {/* Scan Laser effect when analyzing */}
                     {isAnalyzing && !prefersReduced && (
                       <motion.div
-                        className="absolute left-0 right-0 h-[2px] bg-[#c8ff3d] shadow-[0_0_12px_#c8ff3d,0_0_24px_rgba(200,255,61,0.8)] z-20 pointer-events-none"
+                        className="absolute left-0 right-0 h-[2px] bg-accent shadow-[0_0_12px_#c8ff3d,0_0_24px_rgba(200,255,61,0.8)] z-20 pointer-events-none"
                         animate={{ top: ["5%", "95%", "5%"] }}
                         transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
                       />
@@ -548,14 +548,14 @@ export function LiveAnalyzer() {
                       onChange={handleFileUpload}
                       className="hidden"
                     />
-                    <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:border-[#c8ff3d]/50 transition-all">
-                      <Upload className="w-5 h-5 text-zinc-400 group-hover:text-[#c8ff3d] transition-colors" />
+                    <div className="w-12 h-12 rounded-full bg-surface border border-border flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:border-accent-text/50 transition-all shadow-sm">
+                      <Upload className="w-5 h-5 text-muted group-hover:text-accent-text transition-colors" />
                     </div>
-                    <div className="font-mono text-sm text-white font-medium">
+                    <div className="font-mono text-sm text-text font-medium">
                       Drag & Drop Screenshots Here or{" "}
-                      <span className="text-[#c8ff3d] underline">Browse</span>
+                      <span className="text-accent-text underline font-bold">Browse</span>
                     </div>
-                    <p className="mt-1 text-xs text-zinc-500 font-mono">
+                    <p className="mt-1 text-xs text-muted font-mono">
                       Accepts 1–5 PNG/JPG mobile or desktop screens for live Gemini vision review
                     </p>
                   </motion.div>
@@ -566,7 +566,7 @@ export function LiveAnalyzer() {
                       {/* Laser sweep across thumbnails during analyze */}
                       {isAnalyzing && !prefersReduced && (
                         <motion.div
-                          className="absolute left-0 right-0 h-[2px] bg-[#c8ff3d] shadow-[0_0_10px_#c8ff3d] z-20 pointer-events-none"
+                          className="absolute left-0 right-0 h-[2px] bg-accent shadow-[0_0_10px_#c8ff3d] z-20 pointer-events-none"
                           animate={{ top: ["0%", "100%", "0%"] }}
                           transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
                         />
@@ -580,7 +580,7 @@ export function LiveAnalyzer() {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.5, y: -15 }}
                             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                            className="relative w-16 h-20 rounded-lg overflow-hidden border border-white/20 shrink-0 group"
+                            className="relative w-16 h-20 rounded-lg overflow-hidden border border-border bg-surface shrink-0 group shadow-sm"
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
@@ -594,7 +594,7 @@ export function LiveAnalyzer() {
                                 setUploadedImages((prev) => prev.filter((_, i) => i !== idx));
                                 setUploadedFileObjects((prev) => prev.filter((_, i) => i !== idx));
                               }}
-                              className="absolute top-1 right-1 p-1 rounded bg-black/80 text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                              className="absolute top-1 right-1 p-1 rounded bg-surface/90 border border-border text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-sm"
                             >
                               <Trash2 className="w-3 h-3" />
                             </button>
@@ -606,7 +606,7 @@ export function LiveAnalyzer() {
                           setUploadedImages([]);
                           setUploadedFileObjects([]);
                         }}
-                        className="text-xs font-mono text-zinc-500 hover:text-rose-400 underline pl-2 cursor-pointer"
+                        className="text-xs font-mono text-muted hover:text-rose-500 underline pl-2 cursor-pointer"
                       >
                         Reset to preset
                       </button>
@@ -616,12 +616,12 @@ export function LiveAnalyzer() {
               ) : (
                 /* Mode B: Journey Steps Builder */
                 <div className="space-y-3">
-                  <div className="font-mono text-xs text-zinc-400 uppercase tracking-wider">
+                  <div className="font-mono text-xs text-muted uppercase tracking-wider">
                     SPECIFY STEP-BY-STEP FUNNEL:
                   </div>
                   {journeySteps.map((step, idx) => (
                     <div key={idx} className="flex items-center gap-2">
-                      <span className="font-mono text-xs text-[#c8ff3d] w-6 shrink-0">
+                      <span className="font-mono text-xs text-accent-text font-bold w-6 shrink-0">
                         0{idx + 1}.
                       </span>
                       <input
@@ -632,14 +632,14 @@ export function LiveAnalyzer() {
                           updated[idx] = e.target.value;
                           setJourneySteps(updated);
                         }}
-                        className="flex-1 bg-zinc-900 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:border-[#c8ff3d] focus:outline-none"
+                        className="flex-1 bg-surface-2 border border-border rounded-lg px-3 py-2 text-xs font-mono text-text focus:border-accent focus:outline-none"
                       />
                       {journeySteps.length > 2 && (
                         <button
                           onClick={() => {
                             setJourneySteps(journeySteps.filter((_, i) => i !== idx));
                           }}
-                          className="text-zinc-600 hover:text-rose-400 p-1 cursor-pointer"
+                          className="text-muted hover:text-rose-500 p-1 cursor-pointer transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -651,7 +651,7 @@ export function LiveAnalyzer() {
                       playMicroClick();
                       setJourneySteps([...journeySteps, "New step in conversion journey..."]);
                     }}
-                    className="inline-flex items-center gap-1.5 text-xs font-mono text-[#c8ff3d] hover:underline pt-1 cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs font-mono text-accent-text hover:underline pt-1 cursor-pointer font-medium"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add step to journey</span>
@@ -661,9 +661,9 @@ export function LiveAnalyzer() {
             </div>
 
             {/* Right Context & Trigger Column (5 cols) */}
-            <div className="lg:col-span-5 space-y-6 lg:border-l lg:border-white/[0.08] lg:pl-8">
+            <div className="lg:col-span-5 space-y-6 lg:border-l lg:border-border lg:pl-8">
               <div>
-                <label className="block font-mono text-xs text-zinc-400 uppercase tracking-wider mb-2">
+                <label className="block font-mono text-xs text-muted uppercase tracking-wider mb-2">
                   AUDIT CONTEXT & OBJECTIVE (OPTIONAL)
                 </label>
                 <textarea
@@ -671,7 +671,7 @@ export function LiveAnalyzer() {
                   value={contextNote}
                   onChange={(e) => setContextNote(e.target.value)}
                   placeholder="E.g. Target audience: first-time buyers on iOS checkout. Desired goal: complete payment with minimum cognitive hesitation."
-                  className="w-full bg-zinc-900 border border-white/10 rounded-xl p-3 text-xs font-mono text-zinc-200 focus:border-[#c8ff3d] focus:outline-none resize-none"
+                  className="w-full bg-surface-2 border border-border rounded-xl p-3 text-xs font-mono text-text placeholder:text-muted/60 focus:border-accent focus:outline-none resize-none"
                 />
               </div>
 
@@ -679,7 +679,7 @@ export function LiveAnalyzer() {
               <button
                 disabled={isAnalyzing}
                 onClick={handleRunAnalysis}
-                className="w-full py-4 rounded-xl font-mono text-sm font-bold uppercase tracking-wider bg-[#c8ff3d] text-black hover:bg-[#d4ff5e] disabled:opacity-60 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_24px_rgba(200,255,61,0.25)]"
+                className="w-full py-4 rounded-xl font-mono text-sm font-bold uppercase tracking-wider bg-accent text-accent-ink hover:bg-[#d4ff5e] disabled:opacity-60 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_24px_rgba(200,255,61,0.25)]"
               >
                 {isAnalyzing ? (
                   <>
@@ -688,14 +688,14 @@ export function LiveAnalyzer() {
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 fill-black" />
+                    <Sparkles className="w-4 h-4 fill-black text-black" />
                     <span>ANALYZE WITH FRICTION ENGINE &rarr;</span>
                   </>
                 )}
               </button>
 
-              <div className="font-mono text-[11px] text-zinc-500 leading-normal flex items-center gap-1.5">
-                <Cpu className="w-3.5 h-3.5 text-[#c8ff3d] shrink-0" />
+              <div className="font-mono text-[11px] text-muted leading-normal flex items-center gap-1.5">
+                <Cpu className="w-3.5 h-3.5 text-accent-text shrink-0" />
                 <span>Powered by Gemini 3 Flash Vision API + Nielsen 10 Heuristics</span>
               </div>
             </div>
@@ -708,22 +708,22 @@ export function LiveAnalyzer() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mt-6 pt-6 border-t border-white/[0.08] overflow-hidden"
+                className="mt-6 pt-6 border-t border-border overflow-hidden"
               >
-                <div className="p-5 rounded-xl bg-black border border-[#c8ff3d]/30 font-mono text-xs space-y-3">
-                  <div className="flex items-center justify-between text-zinc-400">
-                    <span className="text-[#c8ff3d] uppercase font-bold tracking-wider">
+                <div className="p-5 rounded-xl bg-surface-2 border border-accent/40 font-mono text-xs space-y-3 shadow-inner">
+                  <div className="flex items-center justify-between text-muted">
+                    <span className="text-accent-text uppercase font-bold tracking-wider">
                       [ENGINE PIPELINE // STEP {analysisStep + 1} OF {analysisSteps.length}]
                     </span>
-                    <span className="text-zinc-500">
+                    <span className="text-muted font-mono">
                       {Math.round(((analysisStep + 1) / analysisSteps.length) * 100)}%
                     </span>
                   </div>
 
                   {/* Progress bar */}
-                  <div className="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+                  <div className="w-full h-1.5 rounded-full bg-border overflow-hidden">
                     <motion.div
-                      className="h-full bg-[#c8ff3d]"
+                      className="h-full bg-accent"
                       animate={{
                         width: `${((analysisStep + 1) / analysisSteps.length) * 100}%`,
                       }}
@@ -732,8 +732,8 @@ export function LiveAnalyzer() {
                   </div>
 
                   {/* Step status text rotating with typing animation */}
-                  <div className="flex items-center gap-2 text-zinc-200">
-                    <span className="w-2 h-2 rounded-full bg-[#c8ff3d] animate-ping" />
+                  <div className="flex items-center gap-2 text-text">
+                    <span className="w-2 h-2 rounded-full bg-accent animate-ping" />
                     <Typewriter
                       key={analysisStep}
                       text={analysisSteps[analysisStep]}
@@ -752,19 +752,19 @@ export function LiveAnalyzer() {
           <div className="mt-14 space-y-8">
             {/* AI Summary Banner if returned by Gemini */}
             {aiSummary && (
-              <div className="p-6 rounded-2xl border border-[#c8ff3d]/40 bg-zinc-950/90 relative overflow-hidden">
-                <div className="flex items-center gap-2 font-mono text-xs text-[#c8ff3d] mb-2 font-bold uppercase tracking-wider">
-                  <Sparkles className="w-4 h-4 text-[#c8ff3d]" />
+              <div className="p-6 rounded-2xl border border-accent/40 bg-surface relative overflow-hidden shadow-sm">
+                <div className="flex items-center gap-2 font-mono text-xs text-accent-text mb-2 font-bold uppercase tracking-wider">
+                  <Sparkles className="w-4 h-4 text-accent-text" />
                   <span>GEMINI COGNITIVE OVERVIEW ({aiSource.toUpperCase()})</span>
                 </div>
-                <p className="text-sm sm:text-base font-sans text-zinc-200 leading-relaxed font-light">
+                <p className="text-sm sm:text-base font-sans text-text leading-relaxed font-normal">
                   {aiSummary}
                 </p>
 
                 {/* Quick Roadmap bullets if available */}
                 {roadmap.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-white/[0.08] space-y-2 font-mono text-xs text-zinc-400">
-                    <div className="text-zinc-500 uppercase tracking-wider text-[11px] mb-2">
+                  <div className="mt-4 pt-4 border-t border-border space-y-2 font-mono text-xs text-muted">
+                    <div className="text-muted/80 uppercase tracking-wider text-[11px] mb-2 font-semibold">
                       RECOMMENDED ACTION ROADMAP:
                     </div>
                     {roadmap.map((item, idx) => (
@@ -773,7 +773,7 @@ export function LiveAnalyzer() {
                         initial={prefersReduced ? false : { opacity: 0, x: -12 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.35, delay: 0.15 + idx * 0.12 }}
-                        className="flex items-start gap-2.5 text-zinc-300"
+                        className="flex items-start gap-2.5 text-text"
                       >
                         <motion.div
                           initial={prefersReduced ? false : { scale: 0 }}
@@ -786,7 +786,7 @@ export function LiveAnalyzer() {
                           }}
                           className="shrink-0 mt-0.5"
                         >
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#c8ff3d]" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-accent-text" />
                         </motion.div>
                         <span>{item}</span>
                       </motion.div>
@@ -797,7 +797,7 @@ export function LiveAnalyzer() {
             )}
 
             {/* Results Header: Usability Score + Filter Bar */}
-            <div className="p-6 rounded-2xl border border-white/[0.08] bg-zinc-950/90 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="p-6 rounded-2xl border border-border bg-surface flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
               {/* Score Indicator with Animated Stroke Ring */}
               <div className="flex items-center gap-6">
                 <div className="relative w-20 h-20 rounded-full flex items-center justify-center font-mono shrink-0">
@@ -806,7 +806,7 @@ export function LiveAnalyzer() {
                       cx="40"
                       cy="40"
                       r="34"
-                      stroke="#27272a"
+                      className="stroke-zinc-200 dark:stroke-zinc-800"
                       strokeWidth="5"
                       fill="none"
                     />
@@ -816,7 +816,7 @@ export function LiveAnalyzer() {
                       r="34"
                       stroke={
                         currentScore >= 80
-                          ? "#c8ff3d"
+                          ? "#16a34a"
                           : currentScore >= 60
                           ? "#f59e0b"
                           : "#f43f5e"
@@ -833,40 +833,40 @@ export function LiveAnalyzer() {
                     />
                   </svg>
                   <div className="absolute text-center">
-                    <span className="text-2xl font-black text-white">
+                    <span className="text-2xl font-black text-text">
                       <CountUp target={currentScore} duration={1200} />
                     </span>
-                    <span className="text-[10px] text-zinc-400 block -mt-1">/100</span>
+                    <span className="text-[10px] text-muted block -mt-1 font-mono">/100</span>
                   </div>
                 </div>
 
                 <div>
-                  <div className="font-mono text-xs text-[#c8ff3d] uppercase tracking-widest font-bold">
+                  <div className="font-mono text-xs text-accent-text uppercase tracking-widest font-bold">
                     USABILITY HEALTH SCORE
                   </div>
-                  <h3 className="text-xl font-bold text-white tracking-tight">
+                  <h3 className="text-xl font-bold text-text tracking-tight">
                     {currentScore >= 85
                       ? "High Usability / Production Ready"
                       : currentScore >= 70
                       ? "Moderate Friction / Optimization Suggested"
                       : "Severe Usability Friction Detected"}
                   </h3>
-                  <p className="text-xs text-zinc-400 font-mono mt-0.5">
-                    Estimated Recovery: <span className="text-[#c8ff3d]">{activePreset.estimatedRecovery}</span>
+                  <p className="text-xs text-muted font-mono mt-0.5">
+                    Estimated Recovery: <span className="text-accent-text font-bold">{activePreset.estimatedRecovery}</span>
                   </p>
                 </div>
               </div>
 
               {/* Severity Filter Pills (Popping Spring Chips) & Actions */}
               <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-1 p-1 rounded-lg bg-zinc-900 border border-white/10 font-mono text-xs">
+                <div className="flex items-center gap-1 p-1 rounded-lg bg-surface-2 border border-border font-mono text-xs">
                   <motion.button
                     initial={prefersReduced ? false : { scale: 0.85, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.05, type: "spring", stiffness: 350, damping: 25 }}
                     onClick={() => setSeverityFilter("all")}
                     className={`px-2.5 py-1 rounded cursor-pointer transition-colors ${
-                      severityFilter === "all" ? "bg-white/15 text-white font-bold" : "text-zinc-400"
+                      severityFilter === "all" ? "bg-surface text-text font-bold shadow-sm" : "text-muted hover:text-text"
                     }`}
                   >
                     All ({issues.length})
@@ -877,7 +877,7 @@ export function LiveAnalyzer() {
                     transition={{ delay: 0.1, type: "spring", stiffness: 350, damping: 25 }}
                     onClick={() => setSeverityFilter("critical")}
                     className={`px-2 py-1 rounded cursor-pointer transition-colors ${
-                      severityFilter === "critical" ? "bg-rose-500/20 text-rose-400 font-bold" : "text-zinc-400"
+                      severityFilter === "critical" ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 font-bold" : "text-muted hover:text-text"
                     }`}
                   >
                     Critical ({issues.filter((i) => i.severity === "critical").length})
@@ -888,7 +888,7 @@ export function LiveAnalyzer() {
                     transition={{ delay: 0.15, type: "spring", stiffness: 350, damping: 25 }}
                     onClick={() => setSeverityFilter("high")}
                     className={`px-2 py-1 rounded cursor-pointer transition-colors ${
-                      severityFilter === "high" ? "bg-amber-500/20 text-amber-400 font-bold" : "text-zinc-400"
+                      severityFilter === "high" ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 font-bold" : "text-muted hover:text-text"
                     }`}
                   >
                     High ({issues.filter((i) => i.severity === "high").length})
@@ -899,7 +899,7 @@ export function LiveAnalyzer() {
                     transition={{ delay: 0.2, type: "spring", stiffness: 350, damping: 25 }}
                     onClick={() => setSeverityFilter("medium")}
                     className={`px-2 py-1 rounded cursor-pointer transition-colors ${
-                      severityFilter === "medium" ? "bg-[#c8ff3d]/20 text-[#c8ff3d] font-bold" : "text-zinc-400"
+                      severityFilter === "medium" ? "bg-accent/20 text-accent-text font-bold" : "text-muted hover:text-text"
                     }`}
                   >
                     Medium ({issues.filter((i) => i.severity === "medium").length})
@@ -909,10 +909,10 @@ export function LiveAnalyzer() {
                 {/* Export Report CTA */}
                 <button
                   onClick={handleExportReport}
-                  className="px-3 py-2 rounded-lg bg-white/[0.04] border border-white/10 hover:border-[#c8ff3d] text-xs font-mono text-zinc-200 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-3 py-2 rounded-lg bg-surface border border-border hover:border-accent-text text-xs font-mono text-text hover:text-accent-text transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                   title="Download full JSON audit report"
                 >
-                  <Download className="w-3.5 h-3.5 text-[#c8ff3d]" />
+                  <Download className="w-3.5 h-3.5 text-accent-text" />
                   <span>Export JSON</span>
                 </button>
               </div>
@@ -922,19 +922,19 @@ export function LiveAnalyzer() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               {/* Left Pane: Interactive Screenshot with Numbered Pins (5 cols) */}
               <div className="lg:col-span-5 lg:sticky lg:top-24">
-                <div className="p-4 sm:p-5 rounded-2xl border border-white/[0.08] bg-zinc-950/70">
-                  <div className="flex items-center justify-between mb-3 font-mono text-xs text-zinc-400">
+                <div className="p-4 sm:p-5 rounded-2xl border border-border bg-surface shadow-sm">
+                  <div className="flex items-center justify-between mb-3 font-mono text-xs text-muted">
                     <span className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-[#c8ff3d]" />
-                      <span>CLICK PIN TO FOCUS ISSUE</span>
+                      <span className="w-2 h-2 rounded-full bg-accent" />
+                      <span className="text-text font-medium">CLICK PIN TO FOCUS ISSUE</span>
                     </span>
-                    <span className="text-zinc-500 text-[11px]">
+                    <span className="text-muted text-[11px]">
                       {issues.filter((i) => i.isResolved).length}/{issues.length} FIXED
                     </span>
                   </div>
 
                   {/* Screenshot Container */}
-                  <div className="relative rounded-xl overflow-hidden border border-white/15 bg-black flex items-center justify-center">
+                  <div className="relative rounded-xl overflow-hidden border border-border bg-zinc-950 flex items-center justify-center shadow-inner">
                     {displayImageSrc ? (
                       <div className="relative w-full aspect-[9/16] max-h-[640px] flex items-center justify-center overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -965,14 +965,14 @@ export function LiveAnalyzer() {
                                 onMouseLeave={() => setHoveredPinId(null)}
                                 className={`group relative w-7 h-7 sm:w-8 sm:h-8 rounded-full font-mono text-xs font-bold flex items-center justify-center transition-all cursor-pointer ${
                                   issue.isResolved
-                                    ? "bg-emerald-500 text-black shadow-[0_0_12px_rgba(16,185,129,0.5)]"
+                                    ? "bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]"
                                     : isActive || isHovered
-                                    ? "bg-[#c8ff3d] text-black scale-125 shadow-[0_0_18px_rgba(200,255,61,0.8)] z-30"
+                                    ? "bg-accent text-accent-ink scale-125 shadow-[0_0_18px_rgba(200,255,61,0.8)] z-30"
                                     : issue.severity === "critical"
                                     ? "bg-rose-500 text-white pin-pulse shadow-[0_0_12px_rgba(244,63,94,0.6)]"
                                     : issue.severity === "high"
                                     ? "bg-amber-500 text-black shadow-[0_0_10px_rgba(245,158,11,0.5)]"
-                                    : "bg-zinc-800 text-zinc-200 border border-white/30"
+                                    : "bg-surface text-text border border-border shadow-sm"
                                 }`}
                               >
                                 {issue.isResolved ? (
@@ -982,8 +982,8 @@ export function LiveAnalyzer() {
                                 )}
 
                                 {/* Hover tooltip */}
-                                <div className="absolute left-1/2 bottom-full -translate-x-1/2 mb-2 w-48 p-2 rounded-lg bg-zinc-950/95 border border-white/20 text-[11px] font-sans font-normal text-zinc-200 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-40 text-center shadow-2xl">
-                                  <span className="font-mono text-[9px] uppercase tracking-wider block text-[#c8ff3d]">
+                                <div className="absolute left-1/2 bottom-full -translate-x-1/2 mb-2 w-48 p-2.5 rounded-lg bg-surface border border-border text-[11px] font-sans font-normal text-text opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-40 text-center shadow-xl">
+                                  <span className="font-mono text-[9px] uppercase tracking-wider block text-accent-text font-bold">
                                     [{badge.label}]
                                   </span>
                                   {issue.title}
@@ -995,11 +995,11 @@ export function LiveAnalyzer() {
                       </div>
                     ) : (
                       /* Journey Step representation if no image */
-                      <div className="w-full p-8 text-center font-mono text-xs text-zinc-400 space-y-4">
-                        <div className="text-[#c8ff3d] font-bold uppercase">
+                      <div className="w-full p-8 text-center font-mono text-xs text-muted space-y-4">
+                        <div className="text-accent-text font-bold uppercase">
                           JOURNEY FUNNEL SIMULATION
                         </div>
-                        <p className="text-zinc-300">
+                        <p className="text-text">
                           {activePreset.steps?.join(" → ") || "User journey funnel active"}
                         </p>
                       </div>
@@ -1035,10 +1035,10 @@ export function LiveAnalyzer() {
                       onMouseLeave={() => setHoveredPinId(null)}
                       className={`p-6 rounded-2xl border transition-all ${
                         issue.isResolved
-                          ? "bg-zinc-950/40 border-white/[0.04] opacity-60"
+                          ? "bg-surface/50 border-border opacity-60"
                           : isActive || isHovered
-                          ? "bg-zinc-900/90 border-[#c8ff3d]/60 shadow-[0_0_24px_rgba(200,255,61,0.08)]"
-                          : "bg-zinc-950/80 border-white/[0.08] hover:border-white/20"
+                          ? "bg-surface border-accent shadow-md"
+                          : "bg-surface border-border hover:border-accent-text/40 shadow-sm"
                       }`}
                     >
                       {/* Top Meta Bar */}
@@ -1047,7 +1047,7 @@ export function LiveAnalyzer() {
                           {/* Pin Reference */}
                           <button
                             onClick={() => handlePinClick(issue.id)}
-                            className="w-6 h-6 rounded-md bg-[#c8ff3d]/15 text-[#c8ff3d] border border-[#c8ff3d]/30 font-mono text-xs font-bold flex items-center justify-center hover:bg-[#c8ff3d] hover:text-black transition-colors cursor-pointer"
+                            className="w-6 h-6 rounded-md bg-accent/20 text-accent-text border border-accent/40 font-mono text-xs font-bold flex items-center justify-center hover:bg-accent hover:text-accent-ink transition-colors cursor-pointer"
                           >
                             #{issue.pinNumber}
                           </button>
@@ -1061,7 +1061,7 @@ export function LiveAnalyzer() {
                           </span>
 
                           {/* Heuristic Category */}
-                          <span className="font-mono text-[11px] text-zinc-400">
+                          <span className="font-mono text-[11px] text-muted">
                             {issue.heuristic}
                           </span>
                         </div>
@@ -1071,13 +1071,13 @@ export function LiveAnalyzer() {
                           onClick={() => handleToggleResolved(issue.id)}
                           className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border font-mono text-xs transition-colors cursor-pointer ${
                             issue.isResolved
-                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                              : "bg-white/[0.03] border-white/10 text-zinc-400 hover:text-white hover:border-white/25"
+                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-semibold"
+                              : "bg-surface-2 border-border text-muted hover:text-text hover:border-accent-text/40"
                           }`}
                         >
                           <CheckCircle
                             className={`w-3.5 h-3.5 ${
-                              issue.isResolved ? "text-emerald-400" : "text-zinc-600"
+                              issue.isResolved ? "text-emerald-500" : "text-muted"
                             }`}
                           />
                           <span>{issue.isResolved ? "Resolved (+pts)" : "Mark fixed"}</span>
@@ -1086,26 +1086,26 @@ export function LiveAnalyzer() {
 
                       {/* Issue Title */}
                       <h4
-                        className={`text-lg sm:text-xl font-bold tracking-tight text-white mb-2 ${
-                          issue.isResolved ? "line-through text-zinc-400" : ""
+                        className={`text-lg sm:text-xl font-bold tracking-tight text-text mb-2 ${
+                          issue.isResolved ? "line-through text-muted" : ""
                         }`}
                       >
                         {issue.title}
                       </h4>
 
                       {/* Impact Explanation */}
-                      <div className="mt-3 text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed">
-                        <span className="font-mono text-xs text-rose-400 font-semibold block sm:inline sm:mr-2">
+                      <div className="mt-3 text-xs sm:text-sm text-muted font-sans leading-relaxed">
+                        <span className="font-mono text-xs text-rose-600 dark:text-rose-400 font-semibold block sm:inline sm:mr-2">
                           [HUMAN FRICTION IMPACT]:
                         </span>
                         {issue.impact}
                       </div>
 
                       {/* Concrete Fix Section */}
-                      <div className="mt-4 p-4 rounded-xl bg-black/70 border border-white/[0.08] space-y-2">
-                        <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
-                          <span className="text-[#c8ff3d] font-bold flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5 text-[#c8ff3d]" />
+                      <div className="mt-4 p-4 rounded-xl bg-surface-2 border border-border space-y-2 shadow-inner">
+                        <div className="flex items-center justify-between text-xs font-mono text-muted">
+                          <span className="text-accent-text font-bold flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-accent-text" />
                             <span>CONCRETE REMEDIATION</span>
                           </span>
                           {issue.fix.codeSnippet && (
@@ -1113,12 +1113,12 @@ export function LiveAnalyzer() {
                               onClick={() =>
                                 handleCopyFix(issue.fix.codeSnippet || "", issue.id)
                               }
-                              className="inline-flex items-center gap-1 text-zinc-400 hover:text-[#c8ff3d] transition-colors cursor-pointer"
+                              className="inline-flex items-center gap-1 text-muted hover:text-accent-text transition-colors cursor-pointer"
                             >
                               {copiedId === issue.id ? (
                                 <>
-                                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                  <span className="text-emerald-400">Copied to clipboard!</span>
+                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Copied to clipboard!</span>
                                 </>
                               ) : (
                                 <>
@@ -1130,13 +1130,13 @@ export function LiveAnalyzer() {
                           )}
                         </div>
 
-                        <p className="text-xs text-zinc-300 font-sans">
+                        <p className="text-xs text-text font-sans">
                           {issue.fix.summary}
                         </p>
 
                         {/* Code snippet if present */}
                         {issue.fix.codeSnippet && (
-                          <pre className="mt-2 p-3 rounded-lg bg-zinc-950 border border-white/10 font-mono text-[11px] text-zinc-200 overflow-x-auto leading-relaxed">
+                          <pre className="mt-2 p-3 rounded-lg bg-surface border border-border font-mono text-[11px] text-text overflow-x-auto leading-relaxed shadow-sm">
                             <code>{issue.fix.codeSnippet}</code>
                           </pre>
                         )}

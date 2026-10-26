@@ -107,17 +107,16 @@ function ScrollWord({
   range: [number, number];
   prefersReduced: boolean;
 }) {
-  const opacity = useTransform(progress, range, [0.25, 1]);
-  const color = useTransform(progress, range, ["#52525b", "#f4f4f5"]);
+  const opacity = useTransform(progress, range, [0.28, 1]);
 
   if (prefersReduced) {
-    return <span className="inline-block mr-[0.26em] text-zinc-100">{word}</span>;
+    return <span className="inline-block mr-[0.26em] text-text">{word}</span>;
   }
 
   return (
     <motion.span
-      style={{ opacity, color }}
-      className="inline-block mr-[0.26em] transition-colors will-change-[opacity,color]"
+      style={{ opacity }}
+      className="inline-block mr-[0.26em] text-text transition-opacity will-change-[opacity]"
     >
       {word}
     </motion.span>
@@ -163,20 +162,20 @@ function StatementRow({
       onClick={onSelect}
       className={`relative py-5 sm:py-7 px-4 sm:px-6 rounded-xl border transition-all cursor-pointer ${
         isSelected
-          ? "border-white/20 bg-white/[0.03]"
-          : "border-transparent hover:border-white/[0.08] hover:bg-white/[0.015]"
+          ? "border-accent-text/40 bg-surface shadow-md"
+          : "border-border/60 bg-surface/50 hover:border-border hover:bg-surface"
       }`}
     >
       <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-3 sm:gap-4">
         <div className="flex items-baseline gap-3 sm:gap-4">
-          <span className="font-mono text-sm sm:text-base text-[#c8ff3d] font-bold">
+          <span className="font-mono text-sm sm:text-base text-accent-text font-bold">
             [{item.num}]
           </span>
           <div>
-            <div className="font-mono text-[10px] sm:text-[11px] text-zinc-400 uppercase tracking-widest mb-1.5">
+            <div className="font-mono text-[10px] sm:text-[11px] text-muted uppercase tracking-widest mb-1.5 font-medium">
               {item.category}
             </div>
-            <div className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight select-none">
+            <div className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight select-none text-text">
               &ldquo;
               {words.map((w, wIdx) => {
                 const wStart = segStart + wIdx * wordStep;
@@ -198,17 +197,17 @@ function StatementRow({
 
         <div className="flex items-center gap-4 self-end md:self-auto shrink-0">
           <div className="text-right">
-            <div className="font-mono text-lg sm:text-xl font-black text-rose-400 flex items-center gap-1 justify-end">
-              <TrendingDown className="w-3.5 h-3.5 text-rose-400" />
+            <div className="font-mono text-lg sm:text-xl font-black text-rose-500 flex items-center gap-1 justify-end">
+              <TrendingDown className="w-3.5 h-3.5 text-rose-500" />
               <span>{item.metric}</span>
             </div>
-            <div className="font-mono text-[10px] text-zinc-400 uppercase tracking-wider">
+            <div className="font-mono text-[10px] text-muted uppercase tracking-wider">
               {item.metricLabel}
             </div>
           </div>
           <div
-            className={`w-7 h-7 rounded-full border border-white/10 flex items-center justify-center transition-transform ${
-              isSelected ? "rotate-180 bg-[#c8ff3d] text-black border-[#c8ff3d]" : "text-zinc-400"
+            className={`w-7 h-7 rounded-full border border-border flex items-center justify-center transition-transform ${
+              isSelected ? "rotate-180 bg-accent text-accent-ink border-accent" : "bg-surface-2 text-muted"
             }`}
           >
             <ChevronDown className="w-3.5 h-3.5" />
@@ -218,11 +217,11 @@ function StatementRow({
 
       {/* Finished line lime underline draw */}
       {prefersReduced ? (
-        <div className="h-[2px] bg-[#c8ff3d]/60 mt-3 rounded-full" />
+        <div className="h-[2px] bg-accent mt-3 rounded-full" />
       ) : (
         <motion.div
           style={{ scaleX, transformOrigin: "left" }}
-          className="h-[2px] bg-[#c8ff3d] mt-3 rounded-full"
+          className="h-[2px] bg-accent mt-3 rounded-full"
         />
       )}
     </div>
@@ -261,17 +260,17 @@ export function TheProblem() {
   return (
     <section
       id="the-problem"
-      className="bg-[#08080a] border-b border-white/[0.08] relative"
+      className="bg-bg border-b border-border relative"
     >
       {/* Repeated marquee-style banner header */}
-      <div className="w-full overflow-hidden border-b border-white/[0.08] py-3 bg-zinc-950/60">
-        <div className="animate-marquee flex gap-8 whitespace-nowrap font-mono text-xs text-zinc-500 uppercase tracking-widest">
+      <div className="w-full overflow-hidden border-b border-border py-3 bg-surface-2/60">
+        <div className="animate-marquee flex gap-8 whitespace-nowrap font-mono text-xs text-muted uppercase tracking-widest">
           {Array(6)
             .fill("WHY PRODUCTS LEAK CONVERSION // THE INVISIBLE TAX OF FRICTION")
             .map((item, i) => (
               <span key={i} className="flex items-center gap-6">
                 <span>{item}</span>
-                <span className="text-[#c8ff3d]">✦</span>
+                <span className="text-accent-text">✦</span>
               </span>
             ))}
         </div>
@@ -290,18 +289,18 @@ export function TheProblem() {
           }`}
         >
           {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/[0.08] mb-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-border mb-8">
             <div>
               <SectionLabel number="03" label="THE PROBLEM" />
               <Reveal delay={0.1}>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text uppercase">
                   Microscopic Friction. Compounding Losses.
                 </h2>
               </Reveal>
             </div>
 
             <Reveal delay={0.15}>
-              <div className="font-mono text-xs text-zinc-400 max-w-sm">
+              <div className="font-mono text-xs text-muted max-w-sm">
                 SCROLL TO ADVANCE // CLICK ANY ROW TO INSPECT ROOT CAUSE & TELEMETRY.
               </div>
             </Reveal>
@@ -334,60 +333,60 @@ export function TheProblem() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}
                   transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                  className="p-6 sm:p-7 rounded-xl border border-white/[0.12] bg-zinc-950/90 shadow-2xl space-y-6"
+                  className="p-6 sm:p-7 rounded-xl border border-border bg-surface shadow-xl space-y-6"
                 >
-                  <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+                  <div className="flex items-center justify-between pb-4 border-b border-border">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs text-[#c8ff3d] font-bold">
+                      <span className="font-mono text-xs text-accent-text font-bold">
                         [{activeItem.num}]
                       </span>
-                      <span className="font-mono text-xs text-zinc-300 uppercase tracking-wider font-semibold">
+                      <span className="font-mono text-xs text-text uppercase tracking-wider font-semibold">
                         DEEP ANALYSIS
                       </span>
                     </div>
-                    <span className="font-mono text-xs text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded border border-rose-500/20 font-bold">
+                    <span className="font-mono text-xs text-rose-500 bg-rose-500/10 px-2.5 py-1 rounded border border-rose-500/20 font-bold">
                       {activeItem.metric} {activeItem.metricLabel}
                     </span>
                   </div>
 
                   {/* Root Cause */}
                   <div>
-                    <div className="text-zinc-400 font-mono text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 font-bold">
-                      <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+                    <div className="text-muted font-mono text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 font-bold">
+                      <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
                       <span>ROOT ARCHITECTURAL CAUSE</span>
                     </div>
-                    <p className="text-zinc-300 font-sans text-sm leading-relaxed">
+                    <p className="text-text/90 font-sans text-sm leading-relaxed">
                       {activeItem.rootCause}
                     </p>
                   </div>
 
                   {/* Business Impact */}
                   <div>
-                    <div className="text-zinc-400 font-mono text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 font-bold">
-                      <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
+                    <div className="text-muted font-mono text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 font-bold">
+                      <ShieldAlert className="w-3.5 h-3.5 text-rose-500" />
                       <span>BUSINESS PENALTY</span>
                     </div>
-                    <p className="text-zinc-300 font-sans text-sm leading-relaxed">
+                    <p className="text-text/90 font-sans text-sm leading-relaxed">
                       {activeItem.impact}
                     </p>
-                    <div className="mt-3 inline-block px-2.5 py-1 rounded bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-[#c8ff3d]">
+                    <div className="mt-3 inline-block px-2.5 py-1 rounded bg-accent/10 border border-accent/30 text-xs font-mono text-accent-text font-bold">
                       Rule: {activeItem.heuristicRule}
                     </div>
                   </div>
 
                   {/* AI Detection */}
-                  <div className="pt-4 border-t border-white/[0.08]">
-                    <div className="text-zinc-400 font-mono text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 font-bold">
-                      <Sparkles className="w-3.5 h-3.5 text-[#c8ff3d]" />
+                  <div className="pt-4 border-t border-border">
+                    <div className="text-muted font-mono text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 font-bold">
+                      <Sparkles className="w-3.5 h-3.5 text-accent-text" />
                       <span>HOW FRICTION DETECTS THIS</span>
                     </div>
-                    <p className="text-zinc-300 font-sans text-sm leading-relaxed">
+                    <p className="text-text/90 font-sans text-sm leading-relaxed">
                       {activeItem.aiDetection}
                     </p>
                     <a
                       href="#analyzer"
                       onClick={() => playMicroClick(1000)}
-                      className="mt-4 inline-flex items-center gap-1 text-[#c8ff3d] hover:underline font-semibold font-mono text-xs"
+                      className="mt-4 inline-flex items-center gap-1 text-accent-text hover:underline font-semibold font-mono text-xs"
                     >
                       <span>Audit your screens for this rule</span>
                       <ArrowUpRight className="w-3.5 h-3.5" />

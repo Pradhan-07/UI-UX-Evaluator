@@ -182,21 +182,21 @@ export function HeuristicsMatrix() {
     <section
       id="heuristics"
       ref={sectionRef}
-      className="py-24 sm:py-32 bg-[#08080a] border-b border-white/[0.08] relative overflow-hidden"
+      className="py-24 sm:py-32 bg-surface/50 border-b border-border relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 1) SECTION HEADER */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             {/* Typewritten section tag with blinking lime cursor */}
-            <div className="inline-flex items-center gap-1.5 font-mono text-xs sm:text-sm text-zinc-400 mb-4 h-6">
-              <span className="text-[#c8ff3d] font-bold">
+            <div className="inline-flex items-center gap-1.5 font-mono text-xs sm:text-sm text-muted mb-4 h-6">
+              <span className="text-accent-text font-bold">
                 {typedLabel.slice(0, 4)}
               </span>
-              <span className="tracking-wider uppercase text-zinc-300">
+              <span className="tracking-wider uppercase text-text font-medium">
                 {typedLabel.slice(4)}
               </span>
-              <span className="text-[#c8ff3d] font-bold blink-cursor">_</span>
+              <span className="text-accent-text font-bold blink-cursor">_</span>
             </div>
 
             {/* Masked Line Reveal for Heading */}
@@ -205,7 +205,7 @@ export function HeuristicsMatrix() {
                 initial={prefersReducedMotion ? { opacity: 0 } : { y: "100%" }}
                 animate={isInView ? (prefersReducedMotion ? { opacity: 1 } : { y: 0 }) : {}}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase"
+                className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text uppercase"
               >
                 Heuristic Rulebook.
               </motion.h2>
@@ -217,7 +217,7 @@ export function HeuristicsMatrix() {
             initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 8 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="font-mono text-xs text-zinc-400 max-w-sm leading-relaxed"
+            className="font-mono text-xs text-muted max-w-sm leading-relaxed"
           >
             THE SCIENTIFIC FRAMEWORK DRIVING EVERY AUDIT. ZERO ARBITRARY CRITIQUES.
           </motion.div>
@@ -229,7 +229,7 @@ export function HeuristicsMatrix() {
           animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
           style={{ transformOrigin: "left" }}
-          className="h-[1px] w-full bg-[#c8ff3d] mt-8"
+          className="h-[1px] w-full bg-accent mt-8"
         />
 
         {/* 3) FILTER CHIPS + SEARCH BAR */}
@@ -249,14 +249,14 @@ export function HeuristicsMatrix() {
                     playMicroClick(900);
                     setSelectedCategory(cat);
                   }}
-                  className={`relative min-h-[36px] sm:min-h-[32px] px-3.5 py-1.5 rounded-lg font-mono text-xs transition-colors cursor-pointer flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8ff3d] focus-visible:ring-offset-2 focus-visible:ring-offset-[#08080a] ${
-                    isSelected ? "text-black font-bold z-10" : "text-zinc-300 hover:text-white border border-white/10 hover:border-white/20 bg-white/[0.02]"
+                  className={`relative min-h-[36px] sm:min-h-[32px] px-3.5 py-1.5 rounded-lg font-mono text-xs transition-colors cursor-pointer flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                    isSelected ? "text-accent-ink font-bold z-10" : "text-text/80 hover:text-text border border-border hover:border-accent-text/40 bg-surface shadow-xs"
                   }`}
                 >
                   {isSelected && (
                     <motion.div
                       layoutId="activeFilterChip"
-                      className="absolute inset-0 bg-[#c8ff3d] rounded-lg -z-10 shadow-[0_0_14px_rgba(200,255,61,0.3)]"
+                      className="absolute inset-0 bg-accent rounded-lg -z-10 shadow-sm"
                       transition={
                         prefersReducedMotion
                           ? { duration: 0 }
@@ -273,14 +273,14 @@ export function HeuristicsMatrix() {
 
           {/* Search Box with focus ring & keyboard shortcut hint */}
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               ref={searchInputRef}
               type="text"
               placeholder="Search heuristics, rules, terms... (Press '/')"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="w-full bg-zinc-950/90 border border-white/15 rounded-xl pl-10 pr-9 py-2 font-mono text-xs text-zinc-100 placeholder:text-zinc-500 transition-all duration-200 focus:border-[#c8ff3d] focus:ring-[3px] focus:ring-[#c8ff3d]/15 focus:outline-none"
+              className="w-full bg-surface border border-border rounded-xl pl-10 pr-9 py-2 font-mono text-xs text-text placeholder:text-muted transition-all duration-200 focus:border-accent-text focus:ring-[3px] focus:ring-accent/20 focus:outline-none shadow-xs"
             />
             {searchInput ? (
               <button
@@ -289,13 +289,13 @@ export function HeuristicsMatrix() {
                   setDebouncedQuery("");
                   searchInputRef.current?.focus();
                 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white p-1"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-text p-1 cursor-pointer"
                 title="Clear search (Esc)"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             ) : (
-              <kbd className="hidden sm:inline absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-zinc-900 border border-white/15 text-[10px] font-mono text-zinc-400 pointer-events-none">
+              <kbd className="hidden sm:inline absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-surface-2 border border-border text-[10px] font-mono text-muted pointer-events-none">
                 /
               </kbd>
             )}
@@ -346,7 +346,7 @@ export function HeuristicsMatrix() {
                   e.currentTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
                 }}
                 tabIndex={0}
-                className="group relative p-6 sm:p-7 rounded-xl border border-white/[0.08] hover:border-[#c8ff3d]/40 bg-zinc-950/70 backdrop-blur-sm transition-colors duration-200 flex flex-col justify-between overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8ff3d]"
+                className="group relative p-6 sm:p-7 rounded-xl border border-border hover:border-accent-text/40 bg-surface shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
                 {/* Mouse spotlight overlay (no re-renders, uses CSS vars --mx / --my) */}
                 {!prefersReducedMotion && (
@@ -355,7 +355,7 @@ export function HeuristicsMatrix() {
                     className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"
                     style={{
                       background:
-                        "radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(200, 255, 61, 0.08), transparent 70%)",
+                        "radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(200, 255, 61, 0.12), transparent 70%)",
                     }}
                   />
                 )}
@@ -367,37 +367,37 @@ export function HeuristicsMatrix() {
                       text={`[${rule.number}]`}
                       triggerOnHover={!prefersReducedMotion}
                       duration={380}
-                      className="font-mono text-xs sm:text-sm font-bold text-[#c8ff3d] tracking-wider select-none cursor-default"
+                      className="font-mono text-xs sm:text-sm font-bold text-accent-text tracking-wider select-none cursor-default"
                     />
-                    <span className="px-2.5 py-0.5 rounded bg-white/[0.06] border border-white/15 text-zinc-300 text-[11px] font-mono uppercase tracking-wide">
+                    <span className="px-2.5 py-0.5 rounded bg-surface-2 border border-border text-muted text-[11px] font-mono uppercase tracking-wide">
                       {rule.category}
                     </span>
                   </div>
 
                   {/* Rule Name */}
-                  <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white mb-2.5 group-hover:text-zinc-100 transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold tracking-tight text-text mb-2.5 group-hover:text-accent-text transition-colors">
                     <HighlightText text={rule.name} query={debouncedQuery} />
                   </h3>
 
                   {/* Definition / Body Text (Accessible >=13px and >=4.5:1 contrast) */}
-                  <p className="text-[13px] sm:text-sm text-zinc-300 font-sans leading-relaxed mb-5">
+                  <p className="text-[13px] sm:text-sm text-muted font-sans leading-relaxed mb-5">
                     <HighlightText text={rule.definition} query={debouncedQuery} />
                   </p>
                 </div>
 
                 {/* Bottom Inspection Rows with 2px Lime Bar on Hover */}
-                <div className="relative z-10 pt-4 border-t border-white/[0.07] space-y-3 font-mono text-xs">
+                <div className="relative z-10 pt-4 border-t border-border space-y-3 font-mono text-xs">
                   {/* Detection Rule Row */}
                   <div className="relative pl-3 py-1 group/row transition-colors">
                     <span
                       aria-hidden="true"
-                      className="absolute left-0 top-0 bottom-0 w-[2px] bg-[#c8ff3d] origin-top scale-y-0 group-hover/row:scale-y-100 transition-transform duration-200"
+                      className="absolute left-0 top-0 bottom-0 w-[2px] bg-accent origin-top scale-y-0 group-hover/row:scale-y-100 transition-transform duration-200"
                     />
                     <div>
-                      <span className="text-amber-400 font-semibold mr-1.5 uppercase tracking-wide">
+                      <span className="text-amber-600 font-semibold mr-1.5 uppercase tracking-wide">
                         DETECTION RULE:
                       </span>
-                      <span className="text-zinc-300 font-sans leading-relaxed">
+                      <span className="text-text/90 font-sans leading-relaxed">
                         <HighlightText text={rule.detectionRule} query={debouncedQuery} />
                       </span>
                     </div>
@@ -407,13 +407,13 @@ export function HeuristicsMatrix() {
                   <div className="relative pl-3 py-1 group/row transition-colors">
                     <span
                       aria-hidden="true"
-                      className="absolute left-0 top-0 bottom-0 w-[2px] bg-[#c8ff3d] origin-top scale-y-0 group-hover/row:scale-y-100 transition-transform duration-200"
+                      className="absolute left-0 top-0 bottom-0 w-[2px] bg-accent origin-top scale-y-0 group-hover/row:scale-y-100 transition-transform duration-200"
                     />
                     <div>
-                      <span className="text-[#c8ff3d] font-semibold mr-1.5 uppercase tracking-wide">
+                      <span className="text-accent-text font-semibold mr-1.5 uppercase tracking-wide">
                         CONCRETE REMEDY:
                       </span>
-                      <span className="text-zinc-300 font-sans leading-relaxed">
+                      <span className="text-text/90 font-sans leading-relaxed">
                         <HighlightText text={rule.remedy} query={debouncedQuery} />
                       </span>
                     </div>
@@ -429,18 +429,18 @@ export function HeuristicsMatrix() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-12 p-12 text-center rounded-2xl border border-white/[0.08] bg-zinc-950/60 font-mono"
+            className="mt-12 p-12 text-center rounded-2xl border border-border bg-surface shadow-xs font-mono"
           >
-            <div className="text-base sm:text-lg text-white font-bold tracking-wider mb-2">
+            <div className="text-base sm:text-lg text-text font-bold tracking-wider mb-2">
               <span>NO RULES MATCH THAT QUERY</span>
-              <span className="text-[#c8ff3d] blink-cursor">_</span>
+              <span className="text-accent-text blink-cursor">_</span>
             </div>
-            <p className="text-xs text-zinc-400 mb-6">
+            <p className="text-xs text-muted mb-6">
               No heuristics found matching &ldquo;{searchInput}&rdquo; in category &ldquo;{selectedCategory}&rdquo;.
             </p>
             <button
               onClick={handleClearFilters}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#c8ff3d] text-black font-mono text-xs font-bold uppercase tracking-wider hover:bg-[#d6ff5e] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-accent-ink font-mono text-xs font-bold uppercase tracking-wider hover:bg-[#d6ff5e] transition-colors cursor-pointer shadow-xs"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Clear filters</span>
