@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   Upload,
   FileText,
@@ -28,6 +28,7 @@ import confetti from "canvas-confetti";
 import { AUDIT_PRESETS } from "@/data/presets";
 import { UsabilityIssue, Severity, AuditPreset } from "@/types";
 import { playMicroClick, playPinSelect, playSuccessChime } from "@/utils/audio";
+import { CountUp, Typewriter, SectionLabel, Reveal } from "@/lib/motion";
 
 interface BackendHealth {
   status: string;
@@ -42,6 +43,9 @@ export function LiveAnalyzer() {
   // Custom upload state
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [uploadedFileObjects, setUploadedFileObjects] = useState<File[]>([]);
+  const [isDraggingOver, setIsDraggingOver] = useState<boolean>(false);
+  const prefersReduced = useReducedMotion();
+
   const [journeySteps, setJourneySteps] = useState<string[]>([
     "User lands on product checkout page",
     "Selects shipping address and delivery speed",
@@ -395,16 +399,12 @@ export function LiveAnalyzer() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/[0.08]">
           <div>
-            <div className="inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-zinc-400 mb-4">
-              <span className="text-[#c8ff3d] font-bold">[05]</span>
-              <span className="tracking-wider uppercase text-zinc-300">
-                LIVE ANALYZER // THE CORE
-              </span>
-              <span className="text-[#c8ff3d] font-bold blink-cursor">_</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
-              Autonomous Usability Evaluation.
-            </h2>
+            <SectionLabel number="05" label="LIVE ANALYZER // THE CORE" />
+            <Reveal delay={0.1}>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
+                Autonomous Usability Evaluation.
+              </h2>
+            </Reveal>
           </div>
 
           {/* Backend Status indicator */}
@@ -499,11 +499,16 @@ export function LiveAnalyzer() {
               {/* Mode A: Drag & Drop Zone */}
               {inputMode === "screenshot" ? (
                 <div>
-                  <div
+                  <motion.div
                     onClick={() => fileInputRef.current?.click()}
-                    onDragOver={(e) => e.preventDefault()}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDraggingOver(true);
+                    }}
+                    onDragLeave={() => setIsDraggingOver(false)}
                     onDrop={(e) => {
                       e.preventDefault();
+                      setIsDraggingOver(false);
                       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
                         const fileArray = Array.from(e.dataTransfer.files);
                         setUploadedFileObjects((prev) => [...prev, ...fileArray]);
@@ -512,8 +517,31 @@ export function LiveAnalyzer() {
                         playMicroClick(1000);
                       }
                     }}
-                    className="border-2 border-dashed border-white/15 hover:border-[#c8ff3d]/60 rounded-xl p-8 text-center cursor-pointer bg-white/[0.015] hover:bg-white/[0.03] transition-all group"
+                    animate={
+                      isDraggingOver && !prefersReduced
+                        ? {
+                            borderColor: ["#c8ff3d", "rgba(200,255,61,0.3)", "#c8ff3d"],
+                            scale: [1, 1.01, 1],
+                            backgroundColor: "rgba(200,255,61,0.06)",
+                          }
+                        : {}
+                    }
+                    transition={{ repeat: Infinity, duration: 1.2 }}
+                    className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors group overflow-hidden ${
+                      isDraggingOver
+                        ? "border-[#c8ff3d] bg-[#c8ff3d]/[0.04]"
+                        : "border-white/15 hover:border-[#c8ff3d]/60 bg-white/[0.015] hover:bg-white/[0.03]"
+                    }`}
                   >
+                    {/* Scan Laser effect when analyzing */}
+                    {isAnalyzing && !prefersReduced && (
+                      <motion.div
+                        className="absolute left-0 right-0 h-[2px] bg-[#c8ff3d] shadow-[0_0_12px_#c8ff3d,0_0_24px_rgba(200,255,61,0.8)] z-20 pointer-events-none"
+                        animate={{ top: ["5%", "95%", "5%"] }}
+                        transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+                      />
+                    )}
+
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -532,34 +560,49 @@ export function LiveAnalyzer() {
                     <p className="mt-1 text-xs text-zinc-500 font-mono">
                       Accepts 1–5 PNG/JPG mobile or desktop screens for live Gemini vision review
                     </p>
-                  </div>
+                  </motion.div>
 
-                  {/* Thumbnail Previews if custom uploaded */}
+                  {/* Thumbnail Previews with Spring Enter and Layout Animation */}
                   {uploadedImages.length > 0 && (
-                    <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2">
-                      {uploadedImages.map((src, idx) => (
-                        <div
-                          key={idx}
-                          className="relative w-16 h-20 rounded-lg overflow-hidden border border-white/20 shrink-0 group"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={src}
-                            alt="upload thumb"
-                            className="w-full h-full object-cover"
-                          />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setUploadedImages((prev) => prev.filter((_, i) => i !== idx));
-                              setUploadedFileObjects((prev) => prev.filter((_, i) => i !== idx));
-                            }}
-                            className="absolute top-1 right-1 p-1 rounded bg-black/80 text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                    <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 relative">
+                      {/* Laser sweep across thumbnails during analyze */}
+                      {isAnalyzing && !prefersReduced && (
+                        <motion.div
+                          className="absolute left-0 right-0 h-[2px] bg-[#c8ff3d] shadow-[0_0_10px_#c8ff3d] z-20 pointer-events-none"
+                          animate={{ top: ["0%", "100%", "0%"] }}
+                          transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                        />
+                      )}
+                      <AnimatePresence>
+                        {uploadedImages.map((src, idx) => (
+                          <motion.div
+                            key={src + idx}
+                            layout
+                            initial={{ opacity: 0, scale: 0.6, y: 15 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.5, y: -15 }}
+                            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                            className="relative w-16 h-20 rounded-lg overflow-hidden border border-white/20 shrink-0 group"
                           >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ))}
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={src}
+                              alt="upload thumb"
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setUploadedImages((prev) => prev.filter((_, i) => i !== idx));
+                                setUploadedFileObjects((prev) => prev.filter((_, i) => i !== idx));
+                              }}
+                              className="absolute top-1 right-1 p-1 rounded bg-black/80 text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
                       <button
                         onClick={() => {
                           setUploadedImages([]);
@@ -660,7 +703,7 @@ export function LiveAnalyzer() {
             </div>
           </div>
 
-          {/* Realistic Multi-Step Analysis Loading Pipeline */}
+          {/* Realistic Multi-Step Analysis Loading Pipeline with Typed Status */}
           <AnimatePresence>
             {isAnalyzing && (
               <motion.div
@@ -681,18 +724,24 @@ export function LiveAnalyzer() {
 
                   {/* Progress bar */}
                   <div className="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
-                    <div
-                      className="h-full bg-[#c8ff3d] transition-all duration-300"
-                      style={{
+                    <motion.div
+                      className="h-full bg-[#c8ff3d]"
+                      animate={{
                         width: `${((analysisStep + 1) / analysisSteps.length) * 100}%`,
                       }}
+                      transition={{ duration: 0.3, ease: "easeOut" }}
                     />
                   </div>
 
-                  {/* Step status text */}
+                  {/* Step status text rotating with typing animation */}
                   <div className="flex items-center gap-2 text-zinc-200">
                     <span className="w-2 h-2 rounded-full bg-[#c8ff3d] animate-ping" />
-                    <span>{analysisSteps[analysisStep]}</span>
+                    <Typewriter
+                      key={analysisStep}
+                      text={analysisSteps[analysisStep]}
+                      speed={20}
+                      showCursor={true}
+                    />
                   </div>
                 </div>
               </motion.div>
@@ -716,15 +765,33 @@ export function LiveAnalyzer() {
 
                 {/* Quick Roadmap bullets if available */}
                 {roadmap.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-white/[0.08] space-y-1.5 font-mono text-xs text-zinc-400">
+                  <div className="mt-4 pt-4 border-t border-white/[0.08] space-y-2 font-mono text-xs text-zinc-400">
                     <div className="text-zinc-500 uppercase tracking-wider text-[11px] mb-2">
                       RECOMMENDED ACTION ROADMAP:
                     </div>
                     {roadmap.map((item, idx) => (
-                      <div key={idx} className="flex items-start gap-2 text-zinc-300">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#c8ff3d] shrink-0 mt-0.5" />
+                      <motion.div
+                        key={idx}
+                        initial={prefersReduced ? false : { opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.35, delay: 0.15 + idx * 0.12 }}
+                        className="flex items-start gap-2.5 text-zinc-300"
+                      >
+                        <motion.div
+                          initial={prefersReduced ? false : { scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{
+                            delay: 0.25 + idx * 0.12,
+                            type: "spring",
+                            stiffness: 450,
+                            damping: 20,
+                          }}
+                          className="shrink-0 mt-0.5"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#c8ff3d]" />
+                        </motion.div>
                         <span>{item}</span>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 )}
@@ -733,17 +800,44 @@ export function LiveAnalyzer() {
 
             {/* Results Header: Usability Score + Filter Bar */}
             <div className="p-6 rounded-2xl border border-white/[0.08] bg-zinc-950/90 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              {/* Score Indicator */}
+              {/* Score Indicator with Animated Stroke Ring */}
               <div className="flex items-center gap-6">
-                <div className="relative w-20 h-20 rounded-full border-4 border-zinc-800 flex items-center justify-center font-mono">
-                  <div
-                    className="absolute inset-0 rounded-full border-4 border-[#c8ff3d]"
-                    style={{
-                      clipPath: `polygon(0 0, 100% 0, 100% 100%, 0 ${100 - currentScore}%)`,
-                    }}
-                  />
-                  <div className="text-center">
-                    <span className="text-2xl font-black text-white">{currentScore}</span>
+                <div className="relative w-20 h-20 rounded-full flex items-center justify-center font-mono shrink-0">
+                  <svg className="w-20 h-20 -rotate-90">
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="34"
+                      stroke="#27272a"
+                      strokeWidth="5"
+                      fill="none"
+                    />
+                    <motion.circle
+                      cx="40"
+                      cy="40"
+                      r="34"
+                      stroke={
+                        currentScore >= 80
+                          ? "#c8ff3d"
+                          : currentScore >= 60
+                          ? "#f59e0b"
+                          : "#f43f5e"
+                      }
+                      strokeWidth="5"
+                      fill="none"
+                      strokeDasharray={213.6}
+                      initial={prefersReduced ? false : { strokeDashoffset: 213.6 }}
+                      animate={{
+                        strokeDashoffset: 213.6 * (1 - currentScore / 100),
+                      }}
+                      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute text-center">
+                    <span className="text-2xl font-black text-white">
+                      <CountUp target={currentScore} duration={1200} />
+                    </span>
                     <span className="text-[10px] text-zinc-400 block -mt-1">/100</span>
                   </div>
                 </div>
@@ -765,41 +859,53 @@ export function LiveAnalyzer() {
                 </div>
               </div>
 
-              {/* Severity Filter Pills & Actions */}
+              {/* Severity Filter Pills (Popping Spring Chips) & Actions */}
               <div className="flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-1 p-1 rounded-lg bg-zinc-900 border border-white/10 font-mono text-xs">
-                  <button
+                  <motion.button
+                    initial={prefersReduced ? false : { scale: 0.85, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.05, type: "spring", stiffness: 350, damping: 25 }}
                     onClick={() => setSeverityFilter("all")}
-                    className={`px-2.5 py-1 rounded cursor-pointer ${
+                    className={`px-2.5 py-1 rounded cursor-pointer transition-colors ${
                       severityFilter === "all" ? "bg-white/15 text-white font-bold" : "text-zinc-400"
                     }`}
                   >
                     All ({issues.length})
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
+                    initial={prefersReduced ? false : { scale: 0.85, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.1, type: "spring", stiffness: 350, damping: 25 }}
                     onClick={() => setSeverityFilter("critical")}
-                    className={`px-2 py-1 rounded cursor-pointer ${
+                    className={`px-2 py-1 rounded cursor-pointer transition-colors ${
                       severityFilter === "critical" ? "bg-rose-500/20 text-rose-400 font-bold" : "text-zinc-400"
                     }`}
                   >
                     Critical ({issues.filter((i) => i.severity === "critical").length})
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
+                    initial={prefersReduced ? false : { scale: 0.85, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.15, type: "spring", stiffness: 350, damping: 25 }}
                     onClick={() => setSeverityFilter("high")}
-                    className={`px-2 py-1 rounded cursor-pointer ${
+                    className={`px-2 py-1 rounded cursor-pointer transition-colors ${
                       severityFilter === "high" ? "bg-amber-500/20 text-amber-400 font-bold" : "text-zinc-400"
                     }`}
                   >
                     High ({issues.filter((i) => i.severity === "high").length})
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
+                    initial={prefersReduced ? false : { scale: 0.85, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.2, type: "spring", stiffness: 350, damping: 25 }}
                     onClick={() => setSeverityFilter("medium")}
-                    className={`px-2 py-1 rounded cursor-pointer ${
+                    className={`px-2 py-1 rounded cursor-pointer transition-colors ${
                       severityFilter === "medium" ? "bg-[#c8ff3d]/20 text-[#c8ff3d] font-bold" : "text-zinc-400"
                     }`}
                   >
                     Medium ({issues.filter((i) => i.severity === "medium").length})
-                  </button>
+                  </motion.button>
                 </div>
 
                 {/* Export Report CTA */}
@@ -909,7 +1015,7 @@ export function LiveAnalyzer() {
                 ref={cardsContainerRef}
                 className="lg:col-span-7 space-y-4 max-h-[800px] overflow-y-auto pr-1"
               >
-                {filteredIssues.map((issue) => {
+                {filteredIssues.map((issue, idx) => {
                   const isActive = activePinId === issue.id;
                   const isHovered = hoveredPinId === issue.id;
                   const badge = getSeverityBadge(issue.severity);
@@ -920,6 +1026,13 @@ export function LiveAnalyzer() {
                       id={`card-${issue.id}`}
                       key={issue.id}
                       layout
+                      initial={prefersReduced ? false : { opacity: 0, y: 24, filter: "blur(4px)" }}
+                      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                      transition={{
+                        duration: 0.45,
+                        delay: idx * 0.06,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
                       onMouseEnter={() => setHoveredPinId(issue.id)}
                       onMouseLeave={() => setHoveredPinId(null)}
                       className={`p-6 rounded-2xl border transition-all ${
