@@ -42,19 +42,18 @@
   }
 }
 
-/* Custom Cursor styles */
-body.custom-cursor-enabled,
-body.custom-cursor-enabled a,
-body.custom-cursor-enabled button,
-body.custom-cursor-enabled [role="button"],
-body.custom-cursor-enabled .cursor-pointer {
-  cursor: none !important;
-}
+/* Custom Cursor styles: on (pointer: fine) hide native cursor on html and * only after custom cursor mounted */
+@media (pointer: fine) {
+  html.custom-cursor-enabled,
+  html.custom-cursor-enabled * {
+    cursor: none !important;
+  }
 
-body.custom-cursor-enabled input,
-body.custom-cursor-enabled textarea,
-body.custom-cursor-enabled [contenteditable="true"] {
-  cursor: text !important;
+  html.custom-cursor-enabled input,
+  html.custom-cursor-enabled textarea,
+  html.custom-cursor-enabled [contenteditable="true"] {
+    cursor: text !important;
+  }
 }
 
 /* Accessible focus ring for keyboard navigation */
