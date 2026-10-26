@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useReducedMotion } from "framer-motion";
-import { Volume2, VolumeX, Menu, X, ArrowUpRight, ShieldCheck, Clock } from "lucide-react";
-import { toggleSound, playMicroClick } from "@/utils/audio";
+import { Menu, X, ArrowUpRight, ShieldCheck, Clock } from "lucide-react";
+import { playMicroClick } from "@/utils/audio";
 import { EASE_PREMIUM } from "@/lib/motion";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -15,7 +15,6 @@ interface NavbarProps {
 
 export function Navbar({ onOpenDemo }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [soundOn, setSoundOn] = useState(false);
   const [timeStr, setTimeStr] = useState<string>("");
   const [selectedCityIndex, setSelectedCityIndex] = useState(0);
 
@@ -80,11 +79,6 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleToggleSound = () => {
-    const state = toggleSound();
-    setSoundOn(state);
-    if (state) playMicroClick(1000);
-  };
 
   const cycleCity = () => {
     playMicroClick(900);
@@ -156,19 +150,6 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
             {/* Theme Toggle Button */}
             <ThemeToggle />
 
-            {/* Audio Toggle */}
-            <button
-              onClick={handleToggleSound}
-              title={soundOn ? "Mute interface feedback" : "Enable tactile sound feedback"}
-              aria-label="Sound feedback toggle"
-              className={`min-w-[44px] min-h-[44px] w-11 h-11 rounded-xl flex items-center justify-center border transition-colors cursor-pointer ${
-                soundOn
-                  ? "bg-accent/15 text-accent-text border-accent/40"
-                  : "bg-surface text-muted border-border hover:text-text hover:bg-surface-2"
-              }`}
-            >
-              {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </button>
 
             {/* Quick Analyze Button */}
             <a
