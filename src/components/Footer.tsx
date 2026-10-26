@@ -6,6 +6,7 @@ import { ArrowUpRight, Check, Send, ShieldCheck, Zap } from "lucide-react";
 import { playMicroClick } from "@/utils/audio";
 import { EASE_PREMIUM } from "@/lib/motion";
 import { BrandLogo } from "@/components/BrandLogo";
+import { FlutedEmberWordmark } from "@/components/FlutedEmberWordmark";
 
 
 export function Footer() {
@@ -34,13 +35,11 @@ export function Footer() {
     }
   };
 
-  const wordmarkLetters = "FRICTION".split("");
-
   return (
     <footer className="bg-surface border-t border-border text-muted font-mono text-xs overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12 pb-4">
         {/* Top Agency Branding Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 border-b border-border">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-8 sm:pb-10 border-b border-border">
           <div className="lg:col-span-6 space-y-4">
             <div className="flex items-center gap-3">
               <BrandLogo variant="auto" className="h-10 w-auto" />
@@ -100,12 +99,12 @@ export function Footer() {
         </div>
 
         {/* Directory Links */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 py-12 border-b border-border text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 sm:py-8 border-b border-border text-xs">
           <div>
-            <div className="text-text uppercase tracking-wider mb-4 font-bold">
+            <div className="text-text uppercase tracking-wider mb-3 font-bold">
               [01] ENGINE
             </div>
-            <ul className="space-y-2.5 text-muted">
+            <ul className="space-y-2 text-muted">
               <li><a href="#analyzer" className="hover:text-accent-text transition-colors">Live Prototype Evaluator</a></li>
               <li><a href="#analyzer" className="hover:text-accent-text transition-colors">Journey Funnel Parser</a></li>
               <li><a href="#calculator" className="hover:text-accent-text transition-colors">Usability Cost Calculator</a></li>
@@ -114,10 +113,10 @@ export function Footer() {
           </div>
 
           <div>
-            <div className="text-text uppercase tracking-wider mb-4 font-bold">
+            <div className="text-text uppercase tracking-wider mb-3 font-bold">
               [02] STANDARDS
             </div>
-            <ul className="space-y-2.5 text-muted">
+            <ul className="space-y-2 text-muted">
               <li><a href="#heuristics" className="hover:text-accent-text transition-colors">WCAG 2.2 AA / AAA</a></li>
               <li><a href="#heuristics" className="hover:text-accent-text transition-colors">Fitts's Law Touch Radii</a></li>
               <li><a href="#heuristics" className="hover:text-accent-text transition-colors">Hick's Decision Overhead</a></li>
@@ -126,10 +125,10 @@ export function Footer() {
           </div>
 
           <div>
-            <div className="text-text uppercase tracking-wider mb-4 font-bold">
+            <div className="text-text uppercase tracking-wider mb-3 font-bold">
               [03] PROTOCOLS
             </div>
-            <ul className="space-y-2.5 text-muted">
+            <ul className="space-y-2 text-muted">
               <li><span className="text-muted/60">API Documentation (v2.4)</span></li>
               <li><span className="text-muted/60">GitHub CI/CD Action</span></li>
               <li><span className="text-muted/60">Figma Plugin Bridge</span></li>
@@ -138,17 +137,17 @@ export function Footer() {
           </div>
 
           <div>
-            <div className="text-text uppercase tracking-wider mb-4 font-bold">
+            <div className="text-text uppercase tracking-wider mb-3 font-bold">
               [04] AGENCY
             </div>
-            <ul className="space-y-2.5 text-muted">
+            <ul className="space-y-2 text-muted">
               <li><a href="#who-we-are" className="hover:text-accent-text transition-colors">Who We Are</a></li>
               <li><a href="#the-problem" className="hover:text-accent-text transition-colors">The Problem Matrix</a></li>
               <li><span className="text-muted/60">New Delhi // Bengaluru // SF // Tokyo</span></li>
               <li>
                 <button
                   onClick={scrollToTop}
-                  className="text-accent-text hover:underline flex items-center gap-1 cursor-pointer pt-2 font-bold"
+                  className="text-accent-text hover:underline flex items-center gap-1 cursor-pointer pt-1 font-bold"
                 >
                   <span>Back to top [▲]</span>
                 </button>
@@ -157,42 +156,33 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Giant Footer Wordmark Rising Letter-by-Letter */}
-        <div className="overflow-hidden mt-16 pt-8 pb-4 border-t border-border">
-          <div className="flex justify-between items-center overflow-hidden w-full">
-            {wordmarkLetters.map((char, idx) => (
-              <motion.span
-                key={idx}
-                initial={prefersReduced ? false : { y: "115%", opacity: 0 }}
-                whileInView={{ y: "0%", opacity: 1 }}
-                viewport={{ once: true, margin: "-20px" }}
-                transition={{
-                  duration: 0.7,
-                  delay: prefersReduced ? 0 : idx * 0.045,
-                  ease: EASE_PREMIUM,
-                }}
-                className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl xl:text-[11rem] font-black tracking-tight text-text/[0.05] hover:text-accent-text/30 transition-colors cursor-default select-none inline-block will-change-transform leading-none"
-              >
-                {char}
-              </motion.span>
-            ))}
-          </div>
-        </div>
-
         {/* Bottom Tagline & Legal */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-muted text-[11px] font-mono">
-          <div>
-            &copy; 2026 FRICTION SYSTEMS INC. ALL RIGHTS RESERVED.
+        <div className="pt-5 pb-2 flex flex-col sm:flex-row items-center justify-between gap-3 text-muted text-[11px] font-mono">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_#f97316] animate-pulse" />
+            <span>&copy; 2026 FRICTION SYSTEMS INC. ALL RIGHTS RESERVED.</span>
           </div>
           <div className="text-accent-text font-bold tracking-wider">
             &ldquo;DESIGNERS SHOULD DESIGN. AI SHOULD FIND THE FRICTION.&rdquo;
           </div>
           <div className="flex gap-4">
+            <a href="#docs" className="hover:text-text cursor-pointer transition-colors">DOCS</a>
+            <a href="#changelog" className="hover:text-text cursor-pointer transition-colors">CHANGELOG</a>
             <span className="hover:text-text cursor-pointer transition-colors">PRIVACY</span>
             <span className="hover:text-text cursor-pointer transition-colors">TERMS</span>
             <span className="hover:text-text cursor-pointer transition-colors">SECURITY</span>
           </div>
         </div>
+      </div>
+
+      {/* Giant Fluted Ember Wordmark (Full-Bleed Edge-to-Edge) */}
+      <div className="w-full border-t border-zinc-900 bg-black">
+        <FlutedEmberWordmark
+          text="FRICTION"
+          colPitch={7}
+          glowIntensity={1.45}
+          heightClamp="clamp(90px, 12vw, 175px)"
+        />
       </div>
     </footer>
   );

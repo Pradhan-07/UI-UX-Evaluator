@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Play, Sparkles, Zap, ArrowDown, CheckCircle2, ShieldCheck, AlertOctagon, AlertTriangle, Check } from "lucide-react";
+import { Sparkles, Zap, ArrowDown, CheckCircle2, ShieldCheck, AlertOctagon, AlertTriangle, Check } from "lucide-react";
 import { playMicroClick, playPinSelect } from "@/utils/audio";
 import { EASE_PREMIUM, Magnetic, ScrambleText } from "@/lib/motion";
 
@@ -17,7 +17,7 @@ const HERO_PINS = [
 let hasHeroIntroPlayed = false;
 
 interface HeroProps {
-  onOpenDemo: () => void;
+  onOpenDemo?: () => void;
 }
 
 export function Hero({ onOpenDemo }: HeroProps) {
@@ -155,22 +155,6 @@ export function Hero({ onOpenDemo }: HeroProps) {
                   <span className="text-accent-ink font-extrabold group-hover:translate-x-1 transition-transform">
                     &rarr;
                   </span>
-                </button>
-              </Magnetic>
-
-              {/* Secondary CTA: 90-sec demo */}
-              <Magnetic intensity={0.15}>
-                <button
-                  onClick={() => {
-                    playMicroClick(1000);
-                    onOpenDemo();
-                  }}
-                  className="group inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl font-mono text-sm font-medium tracking-wide bg-surface text-text border border-border hover:border-accent-text hover:bg-surface-2 transition-all cursor-pointer"
-                >
-                  <div className="w-6 h-6 rounded-full bg-surface-2 flex items-center justify-center group-hover:bg-accent group-hover:text-accent-ink transition-colors">
-                    <Play className="w-3 h-3 fill-current ml-0.5" />
-                  </div>
-                  <span>Watch 90-sec demo</span>
                 </button>
               </Magnetic>
             </motion.div>
