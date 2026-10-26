@@ -1,113 +1,262 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { Play, Sparkles, Zap, ArrowDown, CheckCircle2 } from "lucide-react";
-import { playMicroClick } from "@/utils/audio";
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { Play, Sparkles, Zap, ArrowDown, CheckCircle2, ShieldCheck, AlertOctagon, AlertTriangle, Check } from "lucide-react";
+import { playMicroClick, playPinSelect } from "@/utils/audio";
+import { EASE_PREMIUM, Magnetic, ScrambleText } from "@/lib/motion";
 
 interface HeroProps {
   onOpenDemo: () => void;
 }
 
 export function Hero({ onOpenDemo }: HeroProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const prefersReduced = useReducedMotion();
+  const [activeHeroPin, setActiveHeroPin] = useState<number | null>(null);
+
+  // Background faint lime glow following pointer (desktop only)
+  const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (prefersReduced || typeof window === "undefined" || window.innerWidth < 768) return;
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    sectionRef.current?.style.setProperty("--hx", `${x}px`);
+    sectionRef.current?.style.setProperty("--hy", `${y}px`);
+  };
+
   const scrollToAnalyzer = () => {
     playMicroClick(1100);
     const element = document.getElementById("analyzer");
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      const lenis = (window as unknown as { __lenis?: { scrollTo: (target: Element) => void } }).__lenis;
+      if (lenis) {
+        lenis.scrollTo(element);
+      } else {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
+
+  // Mock phone pins for right-side visual
+  const heroPins = [
+    { id: 1, x: 70, y: 32, severity: "high", color: "bg-amber-500", label: "Format Mask Missing", delay: 1.2 },
+    { id: 2, x: 38, y: 52, severity: "critical", color: "bg-rose-500", label: "Tap Target 34px < 44px", delay: 1.5 },
+    { id: 3, x: 50, y: 84, severity: "critical", color: "bg-[#c8ff3d]", label: "Missing CTA Feedback", delay: 1.8 },
+  ];
 
   return (
     <section
       id="hero"
+      ref={sectionRef}
+      onPointerMove={handlePointerMove}
       className="relative min-h-[92vh] pt-28 pb-16 flex flex-col justify-between overflow-hidden border-b border-white/[0.08]"
     >
-      {/* Background Subtle Grid & Radial Glow */}
+      {/* Background Subtle Grid */}
       <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#c8ff3d]/[0.035] blur-[140px] pointer-events-none rounded-full" />
+
+      {/* Pointer-following Faint Lime Glow (Desktop only, CSS vars --hx / --hy) */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-70 transition-opacity duration-500 hidden md:block"
+        style={{
+          background:
+            "radial-gradient(600px circle at var(--hx, 50%) var(--hy, 30%), rgba(200, 255, 61, 0.05), transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        {/* Section Label with blinking underscore */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-zinc-400 mb-6 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.02]"
-        >
-          <span className="text-[#c8ff3d] font-bold">[01]</span>
-          <span className="tracking-wider uppercase text-zinc-300">
-            AUTONOMOUS UX AUDIT ENGINE
-          </span>
-          <span className="text-[#c8ff3d] font-bold blink-cursor">_</span>
-        </motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          {/* Left Column: Heading, Subtext, CTAs (7 cols) */}
+          <div className="lg:col-span-7">
+            {/* Section Label */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-zinc-400 mb-6 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.02]"
+            >
+              <span className="text-[#c8ff3d] font-bold">[01]</span>
+              <span className="tracking-wider uppercase text-zinc-300">
+                AUTONOMOUS UX AUDIT ENGINE
+              </span>
+              <span className="text-[#c8ff3d] font-bold blink-cursor">_</span>
+            </motion.div>
 
-        {/* Hero Heading: Editorial, tight-tracked, uppercase, bracketed [10X] */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.4rem] font-black uppercase tracking-tight leading-[0.95] text-white max-w-6xl"
-        >
-          <span>FIND THE FRICTION</span>
-          <span className="text-[#c8ff3d] blink-cursor">_</span>
-          <br />
-          <span className="inline-flex items-baseline flex-wrap gap-x-4 gap-y-1">
-            <span className="font-mono text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-[#c8ff3d] tracking-normal font-normal">
-              [10X]
-            </span>
-            <span className="text-zinc-200">SHIP THE FIX.</span>
-          </span>
-        </motion.h1>
+            {/* Headline with SplitText line mask reveal & Scrambled keyword */}
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight leading-[0.95] text-white">
+              {/* Line 1: FIND THE FRICTION_ */}
+              <span className="block overflow-hidden">
+                <motion.span
+                  initial={{ y: "110%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.7, ease: EASE_PREMIUM }}
+                  className="block"
+                >
+                  <span>FIND THE </span>
+                  <span className="text-[#c8ff3d]">
+                    <ScrambleText text="FRICTION" duration={700} />
+                  </span>
+                  <span className="text-[#c8ff3d] blink-cursor">_</span>
+                </motion.span>
+              </span>
 
-        {/* Subtext */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-8 text-lg sm:text-xl md:text-2xl text-zinc-400 max-w-2xl font-light leading-relaxed"
-        >
-          Upload screenshots or a user journey. Get usability issues, impact, and concrete fixes in seconds.
-        </motion.p>
+              {/* Line 2: [10X] SHIP THE FIX. */}
+              <span className="block overflow-hidden mt-1 sm:mt-2">
+                <motion.span
+                  initial={{ y: "110%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.7, delay: 0.1, ease: EASE_PREMIUM }}
+                  className="inline-flex items-baseline flex-wrap gap-x-4 gap-y-1"
+                >
+                  <span className="font-mono text-3xl sm:text-5xl md:text-6xl text-[#c8ff3d] tracking-normal font-normal">
+                    [10X]
+                  </span>
+                  <span className="text-zinc-200">SHIP THE FIX.</span>
+                </motion.span>
+              </span>
+            </h1>
 
-        {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-4"
-        >
-          {/* Primary CTA */}
-          <button
-            onClick={scrollToAnalyzer}
-            className="group relative inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl font-mono text-sm font-bold uppercase tracking-wider bg-[#c8ff3d] text-black hover:bg-[#d6ff5e] transition-all shadow-[0_0_24px_rgba(200,255,61,0.25)] hover:shadow-[0_0_36px_rgba(200,255,61,0.45)] cursor-pointer"
-          >
-            <span>Analyze my app</span>
-            <span className="text-black font-extrabold group-hover:translate-x-1 transition-transform">
-              &rarr;
-            </span>
-          </button>
+            {/* Subtext */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.25 }}
+              className="mt-8 text-lg sm:text-xl text-zinc-400 max-w-xl font-light leading-relaxed"
+            >
+              Upload screenshots or a user journey. Get usability issues, impact, and concrete fixes in seconds.
+            </motion.p>
 
-          {/* Secondary CTA: 90-sec demo */}
-          <button
-            onClick={() => {
-              playMicroClick(1000);
-              onOpenDemo();
-            }}
-            className="group inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl font-mono text-sm font-medium tracking-wide bg-white/[0.03] text-white border border-white/15 hover:border-white/30 hover:bg-white/[0.08] transition-all cursor-pointer"
-          >
-            <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#c8ff3d] group-hover:text-black transition-colors">
-              <Play className="w-3 h-3 fill-current ml-0.5" />
-            </div>
-            <span>Watch 90-sec demo</span>
-          </button>
-        </motion.div>
+            {/* Magnetic CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.35 }}
+              className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-4"
+            >
+              {/* Primary CTA wrapped in Magnetic */}
+              <Magnetic intensity={0.2}>
+                <button
+                  onClick={scrollToAnalyzer}
+                  className="group relative inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl font-mono text-sm font-bold uppercase tracking-wider bg-[#c8ff3d] text-black hover:bg-[#d6ff5e] transition-all shadow-[0_0_24px_rgba(200,255,61,0.25)] hover:shadow-[0_0_36px_rgba(200,255,61,0.45)] cursor-pointer"
+                >
+                  <span>Analyze my app</span>
+                  <span className="text-black font-extrabold group-hover:translate-x-1 transition-transform">
+                    &rarr;
+                  </span>
+                </button>
+              </Magnetic>
+
+              {/* Secondary CTA: 90-sec demo */}
+              <Magnetic intensity={0.15}>
+                <button
+                  onClick={() => {
+                    playMicroClick(1000);
+                    onOpenDemo();
+                  }}
+                  className="group inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl font-mono text-sm font-medium tracking-wide bg-white/[0.03] text-white border border-white/15 hover:border-white/30 hover:bg-white/[0.08] transition-all cursor-pointer"
+                >
+                  <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#c8ff3d] group-hover:text-black transition-colors">
+                    <Play className="w-3 h-3 fill-current ml-0.5" />
+                  </div>
+                  <span>Watch 90-sec demo</span>
+                </button>
+              </Magnetic>
+            </motion.div>
+          </div>
+
+          {/* Right Column: Interactive Mock Phone Screen with Lime Sweep & Spring Pins (5 cols) */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-end">
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: EASE_PREMIUM }}
+              className="relative w-full max-w-[320px] rounded-[36px] p-3 bg-gradient-to-b from-white/15 to-white/5 border border-white/20 shadow-2xl backdrop-blur-md"
+            >
+              {/* Phone Inner Bezel & Screen */}
+              <div className="relative aspect-[9/18] w-full rounded-[28px] bg-black overflow-hidden border border-white/10 flex flex-col justify-between">
+                {/* Simulated Screen Image */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/samples/checkout.jpg"
+                  alt="App interface preview"
+                  className="w-full h-full object-cover pointer-events-none opacity-85"
+                />
+
+                {/* Sweeping Lime Laser Scan Line (top -> bottom infinite or smooth) */}
+                {!prefersReduced && (
+                  <motion.div
+                    animate={{ y: ["0%", "480%", "0%"] }}
+                    transition={{
+                      duration: 4.5,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#c8ff3d] to-transparent shadow-[0_0_15px_#c8ff3d] pointer-events-none z-10"
+                    aria-hidden="true"
+                  />
+                )}
+
+                {/* Numbered Issue Pins popping in one by one (spring) */}
+                {heroPins.map((pin) => (
+                  <motion.div
+                    key={pin.id}
+                    style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 18,
+                      delay: prefersReduced ? 0.2 : pin.delay,
+                    }}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 z-20 group"
+                  >
+                    <button
+                      onClick={() => {
+                        playPinSelect();
+                        setActiveHeroPin(activeHeroPin === pin.id ? null : pin.id);
+                      }}
+                      className={`relative w-7 h-7 rounded-full font-mono text-xs font-black flex items-center justify-center text-black transition-transform group-hover:scale-125 cursor-pointer shadow-lg ${
+                        pin.severity === "critical"
+                          ? "bg-rose-500 text-white shadow-[0_0_12px_rgba(244,63,94,0.7)]"
+                          : pin.color
+                      }`}
+                    >
+                      <span>0{pin.id}</span>
+
+                      {/* Small Mono Tooltip */}
+                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 rounded bg-zinc-950/95 border border-white/20 text-[10px] font-mono whitespace-nowrap text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
+                        {pin.label}
+                      </span>
+                    </button>
+                  </motion.div>
+                ))}
+
+                {/* Top Status Bar Notch */}
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-4 bg-black/80 rounded-full border border-white/10 flex items-center justify-center z-30">
+                  <span className="w-2 h-2 rounded-full bg-[#c8ff3d] animate-ping" />
+                </div>
+
+                {/* Bottom telemetry overlay pill */}
+                <div className="absolute bottom-3 left-3 right-3 p-2 rounded-xl bg-zinc-950/90 border border-white/10 backdrop-blur-md flex items-center justify-between text-[10px] font-mono text-zinc-400 z-30">
+                  <span className="text-[#c8ff3d] flex items-center gap-1 font-bold">
+                    <Sparkles className="w-3 h-3" />
+                    <span>3 ISSUES PINNED</span>
+                  </span>
+                  <span>1.8s TURNAROUND</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
 
         {/* Small Meta Row */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.45 }}
           className="mt-14 pt-8 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-zinc-400"
         >
           <div className="flex flex-wrap items-center gap-3 sm:gap-6">
@@ -133,32 +282,6 @@ export function Hero({ onOpenDemo }: HeroProps) {
             <ArrowDown className="w-3 h-3 animate-bounce text-[#c8ff3d]" />
           </div>
         </motion.div>
-      </div>
-
-      {/* Floating Agency Telemetry Badge in bottom corner */}
-      <div className="hidden xl:block absolute right-8 top-36 w-64 p-4 rounded-xl bg-zinc-950/70 border border-white/[0.08] backdrop-blur-md font-mono text-xs">
-        <div className="flex items-center justify-between text-zinc-500 mb-2">
-          <span>MODEL TELEMETRY</span>
-          <span className="text-[#c8ff3d]">LIVE</span>
-        </div>
-        <div className="space-y-1.5 text-zinc-400">
-          <div className="flex justify-between">
-            <span>Saccade Mapping:</span>
-            <span className="text-zinc-200">Active (40Hz)</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Fitts Radius:</span>
-            <span className="text-zinc-200">44px Rule</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Contrast Engine:</span>
-            <span className="text-zinc-200">WCAG AAA</span>
-          </div>
-        </div>
-        <div className="mt-3 pt-2.5 border-t border-white/[0.06] text-[10px] text-zinc-500 flex items-center gap-1.5">
-          <Zap className="w-3 h-3 text-[#c8ff3d]" />
-          <span>ZERO LOREM IPSUM // REAL CODE FIXES</span>
-        </div>
       </div>
     </section>
   );
