@@ -6,6 +6,16 @@ import { Play, Sparkles, Zap, ArrowDown, CheckCircle2, ShieldCheck, AlertOctagon
 import { playMicroClick, playPinSelect } from "@/utils/audio";
 import { EASE_PREMIUM, Magnetic, ScrambleText } from "@/lib/motion";
 
+// Mock phone pins for right-side visual (constant, stable reference)
+const HERO_PINS = [
+  { id: 1, x: 70, y: 32, severity: "high", color: "bg-amber-500", label: "Format Mask Missing", delay: 1.2 },
+  { id: 2, x: 38, y: 52, severity: "critical", color: "bg-rose-500", label: "Tap Target 34px < 44px", delay: 1.5 },
+  { id: 3, x: 50, y: 84, severity: "critical", color: "bg-[#c8ff3d]", label: "Missing CTA Feedback", delay: 1.8 },
+] as const;
+
+// Module-level guard: hero intro animation must play exactly once per page load
+let hasHeroIntroPlayed = false;
+
 interface HeroProps {
   onOpenDemo: () => void;
 }
@@ -39,12 +49,12 @@ export function Hero({ onOpenDemo }: HeroProps) {
     }
   };
 
-  // Mock phone pins for right-side visual
-  const heroPins = [
-    { id: 1, x: 70, y: 32, severity: "high", color: "bg-amber-500", label: "Format Mask Missing", delay: 1.2 },
-    { id: 2, x: 38, y: 52, severity: "critical", color: "bg-rose-500", label: "Tap Target 34px < 44px", delay: 1.5 },
-    { id: 3, x: 50, y: 84, severity: "critical", color: "bg-[#c8ff3d]", label: "Missing CTA Feedback", delay: 1.8 },
-  ];
+  // Intro runs once on initial page load; subsequent re-renders use initial={false}
+  const shouldAnimate = !hasHeroIntroPlayed;
+
+  useEffect(() => {
+    hasHeroIntroPlayed = true;
+  }, []);
 
   return (
     <section
@@ -72,7 +82,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
           <div className="lg:col-span-7">
             {/* Section Label */}
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={shouldAnimate ? { opacity: 0, y: 12 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               className="inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-zinc-400 mb-6 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.02]"
@@ -89,7 +99,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
               {/* Line 1: FIND THE FRICTION_ */}
               <span className="block overflow-hidden">
                 <motion.span
-                  initial={{ y: "110%" }}
+                  initial={shouldAnimate ? { y: "110%" } : false}
                   animate={{ y: "0%" }}
                   transition={{ duration: 0.7, ease: EASE_PREMIUM }}
                   className="block"
@@ -105,7 +115,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
               {/* Line 2: [10X] SHIP THE FIX. */}
               <span className="block overflow-hidden mt-1 sm:mt-2">
                 <motion.span
-                  initial={{ y: "110%" }}
+                  initial={shouldAnimate ? { y: "110%" } : false}
                   animate={{ y: "0%" }}
                   transition={{ duration: 0.7, delay: 0.1, ease: EASE_PREMIUM }}
                   className="inline-flex items-baseline flex-wrap gap-x-4 gap-y-1"
@@ -120,7 +130,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
 
             {/* Subtext */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldAnimate ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.25 }}
               className="mt-8 text-lg sm:text-xl text-zinc-400 max-w-xl font-light leading-relaxed"
@@ -130,7 +140,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
 
             {/* Magnetic CTAs */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldAnimate ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.35 }}
               className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-4"
@@ -169,7 +179,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
           {/* Right Column: Interactive Mock Phone Screen with Lime Sweep & Spring Pins (5 cols) */}
           <div className="lg:col-span-5 flex justify-center lg:justify-end">
             <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.96 }}
+              initial={shouldAnimate ? { opacity: 0, y: 30, scale: 0.96 } : false}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.3, ease: EASE_PREMIUM }}
               className="relative w-full max-w-[320px] rounded-[36px] p-3 bg-gradient-to-b from-white/15 to-white/5 border border-white/20 shadow-2xl backdrop-blur-md"
@@ -199,11 +209,11 @@ export function Hero({ onOpenDemo }: HeroProps) {
                 )}
 
                 {/* Numbered Issue Pins popping in one by one (spring) */}
-                {heroPins.map((pin) => (
+                {HERO_PINS.map((pin) => (
                   <motion.div
                     key={pin.id}
                     style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
-                    initial={{ scale: 0, opacity: 0 }}
+                    initial={shouldAnimate ? { scale: 0, opacity: 0 } : false}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{
                       type: "spring",
@@ -254,7 +264,7 @@ export function Hero({ onOpenDemo }: HeroProps) {
 
         {/* Small Meta Row */}
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={shouldAnimate ? { opacity: 0 } : false}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.45 }}
           className="mt-14 pt-8 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-zinc-400"

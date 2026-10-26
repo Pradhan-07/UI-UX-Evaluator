@@ -520,16 +520,14 @@ export function LiveAnalyzer() {
                     animate={
                       isDraggingOver && !prefersReduced
                         ? {
-                            borderColor: ["#c8ff3d", "rgba(200,255,61,0.3)", "#c8ff3d"],
                             scale: [1, 1.01, 1],
-                            backgroundColor: "rgba(200,255,61,0.06)",
                           }
                         : {}
                     }
                     transition={{ repeat: Infinity, duration: 1.2 }}
                     className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors group overflow-hidden ${
                       isDraggingOver
-                        ? "border-[#c8ff3d] bg-[#c8ff3d]/[0.04]"
+                        ? "border-[#c8ff3d] bg-[#c8ff3d]/[0.08]"
                         : "border-white/15 hover:border-[#c8ff3d]/60 bg-white/[0.015] hover:bg-white/[0.03]"
                     }`}
                   >

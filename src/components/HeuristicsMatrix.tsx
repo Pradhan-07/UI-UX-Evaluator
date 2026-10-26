@@ -382,7 +382,6 @@ export function HeuristicsMatrix() {
                     ? {}
                     : {
                         y: -4,
-                        borderColor: "rgba(200, 255, 61, 0.4)",
                         boxShadow: "0 12px 30px -10px rgba(200, 255, 61, 0.16)",
                         transition: { type: "spring", stiffness: 300, damping: 24 },
                       }
@@ -394,7 +393,7 @@ export function HeuristicsMatrix() {
                   e.currentTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
                 }}
                 tabIndex={0}
-                className="group relative p-6 sm:p-7 rounded-xl border border-white/[0.08] bg-zinc-950/70 backdrop-blur-sm transition-all flex flex-col justify-between overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8ff3d]"
+                className="group relative p-6 sm:p-7 rounded-xl border border-white/[0.08] hover:border-[#c8ff3d]/40 bg-zinc-950/70 backdrop-blur-sm transition-colors duration-200 flex flex-col justify-between overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8ff3d]"
               >
                 {/* Mouse spotlight overlay (no re-renders, uses CSS vars --mx / --my) */}
                 {!prefersReducedMotion && (
