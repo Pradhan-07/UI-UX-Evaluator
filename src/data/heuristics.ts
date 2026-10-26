@@ -1,0 +1,138 @@
+export interface HeuristicDetail {
+  number: string;
+  name: string;
+  category: "Nielsen" | "WCAG 2.2" | "Cognitive Psychology";
+  definition: string;
+  detectionRule: string;
+  exampleFriction: string;
+  remedy: string;
+}
+
+export const HEURISTICS_DATABASE: HeuristicDetail[] = [
+  {
+    number: "N-01",
+    name: "Visibility of System Status",
+    category: "Nielsen",
+    definition: "The design should always keep users informed about what is going on, through appropriate feedback within a reasonable time.",
+    detectionRule: "Lack of loader, spinner, or progress bar on async network mutations exceeding 300ms latency.",
+    exampleFriction: "User clicks 'Confirm Payment' and the button remains static for 4 seconds, provoking panic clicks.",
+    remedy: "Immediate optimistic state update + disabled button state + animated activity indicator.",
+  },
+  {
+    number: "N-02",
+    name: "Match Between System and Real World",
+    category: "Nielsen",
+    definition: "The design should speak the users' language, with words, phrases, and concepts familiar to the user, rather than internal jargon.",
+    detectionRule: "Exposure of database schema names, raw JSON error payloads, or technical protocol codes to end users.",
+    exampleFriction: "'Error 0x88402: Payload schema mismatch on entity relation' shown in red modal.",
+    remedy: "Humanized error taxonomy: 'We couldn't verify your zip code. Please double-check the digits.'",
+  },
+  {
+    number: "N-03",
+    name: "User Control and Freedom",
+    category: "Nielsen",
+    definition: "Users often perform actions by mistake. They need a clearly marked 'emergency exit' to leave the unwanted action without having to go through an extended process.",
+    detectionRule: "Absence of undo affordance, non-functional back buttons, or modal traps without close handles.",
+    exampleFriction: "User accidentally archives an invoice and must navigate 4 submenus to restore it.",
+    remedy: "Persistent 'Undo (Z)' toast notification with 8-second grace window on destructive operations.",
+  },
+  {
+    number: "N-04",
+    name: "Consistency and Standards",
+    category: "Nielsen",
+    definition: "Users should not have to wonder whether different words, situations, or actions mean the same thing. Follow platform and industry conventions.",
+    detectionRule: "Inconsistent button styles for equivalent primary actions; inverted semantics (e.g. green for cancel).",
+    exampleFriction: "One page uses a magnifying glass for search, another uses an obscure filter funnel for the same query.",
+    remedy: "Strict atomic design system tokens with unified icon semantics.",
+  },
+  {
+    number: "N-05",
+    name: "Error Prevention",
+    category: "Nielsen",
+    definition: "Better than good error messages is a careful design which prevents a problem from occurring in the first place.",
+    detectionRule: "Permitting submission of invalid form parameters that could have been constrained via input masks or dropdowns.",
+    exampleFriction: "Allows users to type letters into credit card expiry date field, failing on submit.",
+    remedy: "Inline character masking, smart defaults, and progressive disclosure constraints.",
+  },
+  {
+    number: "N-06",
+    name: "Recognition Rather Than Recall",
+    category: "Nielsen",
+    definition: "Minimize the user's memory load by making elements, actions, and options visible. Avoid making users remember info between steps.",
+    detectionRule: "Hiding required coupon codes, previous cart selections, or reference IDs on subsequent checkout steps.",
+    exampleFriction: "Step 3 asks user for order ID generated on Step 1 without displaying it on the screen.",
+    remedy: "Contextual sticky summary drawer displaying prior step values.",
+  },
+  {
+    number: "N-07",
+    name: "Flexibility and Efficiency of Use",
+    category: "Nielsen",
+    definition: "Accelerators — unseen by the novice user — may often speed up the interaction for the expert user such that the system caters to both.",
+    detectionRule: "No keyboard shortcuts (Cmd+K, Enter, Esc), lack of bulk actions, or tedious click paths.",
+    exampleFriction: "Requiring 4 clicks to delete an item when backspace/delete key could perform it.",
+    remedy: "Global command palette (Cmd+K), quick hotkeys, and multi-select batch affordances.",
+  },
+  {
+    number: "N-08",
+    name: "Aesthetic and Minimalist Design",
+    category: "Nielsen",
+    definition: "Interfaces should not contain information that is irrelevant or rarely needed. Every extra unit of information competes with relevant information.",
+    detectionRule: "High visual clutter index: more than 7 primary choice options above the fold on mobile viewports.",
+    exampleFriction: "Displaying 14 marketing badges, cookie consent banners, and live chat bubbles concurrently.",
+    remedy: "Ruthless editorial pruning; hierarchy emphasis on the single primary conversion action.",
+  },
+  {
+    number: "N-09",
+    name: "Help Users Recognize, Diagnose, and Recover from Errors",
+    category: "Nielsen",
+    definition: "Error messages should be expressed in plain language (no error codes), precisely indicate the problem, and constructively suggest a solution.",
+    detectionRule: "Generic 'Something went wrong' toast with no action link or self-healing pathway.",
+    exampleFriction: "Generic alert dialog with only an 'OK' button after failed card charge.",
+    remedy: "'Card declined by issuer due to insufficient funds. Try another card or contact your bank.' + 1-click retry.",
+  },
+  {
+    number: "N-10",
+    name: "Help and Documentation",
+    category: "Nielsen",
+    definition: "It's best if the system doesn't need any additional explanation, but it may be necessary to provide documentation that is easy to search.",
+    detectionRule: "Unexplained complex financial or technical inputs without hover helper or tooltip.",
+    exampleFriction: "Unexplained 'Webhook Signing Secret' field causing user confusion during API setup.",
+    remedy: "Inline micro-tooltips with 1-click test ping sandbox verification.",
+  },
+  {
+    number: "W-01",
+    name: "WCAG 1.4.3: Contrast (Minimum)",
+    category: "WCAG 2.2",
+    definition: "The visual presentation of text and images of text has a contrast ratio of at least 4.5:1 for normal text and 3:1 for large text.",
+    detectionRule: "Luminance calculation of foreground text against background container < 4.5:1 ratio.",
+    exampleFriction: "Muted gray text (#71717A) on dark background (#09090B) yields only 2.4:1 contrast.",
+    remedy: "Automated color boost to #D4D4D8 or #F4F4F5 meeting WCAG AAA standard.",
+  },
+  {
+    number: "W-02",
+    name: "WCAG 2.5.5: Target Size (Enhanced)",
+    category: "WCAG 2.2",
+    definition: "The size of the target for pointer inputs is at least 44 by 44 CSS pixels.",
+    detectionRule: "Interactive touch bounding box element height or width < 44px on mobile viewport emulation.",
+    exampleFriction: "24px checkbox or sub-menu link resulting in repeated accidental mis-clicks.",
+    remedy: "Apply CSS pseudo-elements (::after) to expand hit slop to 48px without compromising layout compactness.",
+  },
+  {
+    number: "P-01",
+    name: "Hick's Law: Decision Overhead",
+    category: "Cognitive Psychology",
+    definition: "The time it takes to make a decision increases logarithmically with the number and complexity of choices.",
+    detectionRule: "Funnel step containing > 4 concurrent unranked call-to-actions or > 8 form fields.",
+    exampleFriction: "Offering 6 distinct checkout methods without recommending the preferred option.",
+    remedy: "Highlight 1 primary recommended path with 'Default / Fast' badge; collapse secondary methods.",
+  },
+  {
+    number: "P-02",
+    name: "Fitts's Law: Target Acquisition",
+    category: "Cognitive Psychology",
+    definition: "The time required to rapidly move to a target area is a function of the ratio between the distance to the target and the width of the target.",
+    detectionRule: "Critical mobile action buttons placed in the top thumb-strain zone (> 65% vertical screen height from bottom).",
+    exampleFriction: "Placing 'Next' button at the top-right corner of a 6.7-inch iPhone screen.",
+    remedy: "Affix primary CTA to bottom thumb-zone dock with full viewport width.",
+  },
+];
