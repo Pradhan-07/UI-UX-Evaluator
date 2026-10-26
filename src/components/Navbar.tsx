@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useReducedMotion } from "framer-motion";
 import { Volume2, VolumeX, Menu, X, ArrowUpRight, ShieldCheck, Clock } from "lucide-react";
-import { toggleSound, isSoundEnabled, playMicroClick } from "@/utils/audio";
+import { toggleSound, playMicroClick } from "@/utils/audio";
+import { EASE_PREMIUM } from "@/lib/motion";
 
 interface NavbarProps {
   onOpenDemo: () => void;
@@ -14,6 +15,25 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
   const [soundOn, setSoundOn] = useState(false);
   const [timeStr, setTimeStr] = useState<string>("");
   const [selectedCityIndex, setSelectedCityIndex] = useState(0);
+
+  // Scroll hide / show state
+  const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
+  const prevScrollY = useRef(0);
+  const prefersReduced = useReducedMotion();
+
+  useEffect(() => {
+    return scrollY.on("change", (latest) => {
+      if (menuOpen) return;
+      const diff = latest - prevScrollY.current;
+      if (latest > 100 && diff > 8) {
+        setHidden(true);
+      } else if (diff < -8 || latest <= 50) {
+        setHidden(false);
+      }
+      prevScrollY.current = latest;
+    });
+  }, [scrollY, menuOpen]);
 
   const CITIES = [
     { name: "NEW DELHI (IST)", tz: "Asia/Kolkata" },
@@ -82,13 +102,22 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
     setMenuOpen(false);
     const element = document.querySelector(href);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      const lenis = (window as unknown as { __lenis?: { scrollTo: (target: Element) => void } }).__lenis;
+      if (lenis) {
+        lenis.scrollTo(element);
+      } else {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#08080a]/85 backdrop-blur-md border-b border-white/[0.08] transition-all">
+      <motion.header
+        animate={{ y: hidden && !menuOpen ? "-100%" : "0%" }}
+        transition={{ duration: 0.35, ease: EASE_PREMIUM }}
+        className="fixed top-0 left-0 right-0 z-50 bg-[#08080a]/85 backdrop-blur-md border-b border-white/[0.08]"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo Left */}
           <div className="flex items-center gap-3">
@@ -110,7 +139,7 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
             <button
               onClick={cycleCity}
               title="Click to toggle timezone"
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] border border-white/[0.08] hover:border-white/20 hover:text-white transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.04] border border-white/[0.08] hover:border-white/20 hover:text-white transition-colors cursor-pointer"
             >
               <Clock className="w-3.5 h-3.5 text-[#c8ff3d]" />
               <span className="text-zinc-200 font-medium">{CITIES[selectedCityIndex].name}</span>
@@ -129,7 +158,7 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
               onClick={handleToggleSound}
               title={soundOn ? "Mute interface feedback" : "Enable tactile sound feedback"}
               aria-label="Sound feedback toggle"
-              className={`p-2 rounded border transition-colors ${
+              className={`p-2 rounded border transition-colors cursor-pointer ${
                 soundOn
                   ? "bg-[#c8ff3d]/10 text-[#c8ff3d] border-[#c8ff3d]/40"
                   : "bg-white/[0.03] text-zinc-400 border-white/[0.08] hover:text-white hover:border-white/20"
@@ -142,7 +171,7 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
             <a
               href="#analyzer"
               onClick={() => playMicroClick()}
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono font-medium px-3.5 py-1.5 rounded bg-white/[0.05] border border-white/[0.12] text-zinc-200 hover:text-white hover:border-[#c8ff3d] hover:bg-[#c8ff3d]/10 transition-all"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono font-medium px-3.5 py-1.5 rounded bg-white/[0.05] border border-white/[0.12] text-zinc-200 hover:text-white hover:border-[#c8ff3d] hover:bg-[#c8ff3d]/10 transition-all cursor-pointer"
             >
               <span>[05] ANALYZE</span>
               <span className="text-[#c8ff3d]">&rarr;</span>
@@ -154,7 +183,7 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
                 playMicroClick();
                 setMenuOpen(!menuOpen);
               }}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded bg-zinc-900 border border-white/20 hover:border-[#c8ff3d] text-white hover:text-[#c8ff3d] transition-all font-mono text-xs font-semibold"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded bg-zinc-900 border border-white/20 hover:border-[#c8ff3d] text-white hover:text-[#c8ff3d] transition-all font-mono text-xs font-semibold cursor-pointer"
               aria-expanded={menuOpen}
               aria-label="Toggle navigation menu"
             >
@@ -164,16 +193,31 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
             </button>
           </div>
         </div>
-      </header>
+      </motion.header>
 
-      {/* Full-screen Overlay Menu */}
+      {/* Full-screen Overlay Menu with expanding circular clip-path */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            initial={{
+              clipPath: prefersReduced
+                ? "none"
+                : "circle(0% at calc(100% - 60px) 32px)",
+              opacity: prefersReduced ? 0 : 1,
+            }}
+            animate={{
+              clipPath: prefersReduced
+                ? "none"
+                : "circle(150% at calc(100% - 60px) 32px)",
+              opacity: 1,
+            }}
+            exit={{
+              clipPath: prefersReduced
+                ? "none"
+                : "circle(0% at calc(100% - 60px) 32px)",
+              opacity: prefersReduced ? 0 : 1,
+            }}
+            transition={{ duration: 0.55, ease: EASE_PREMIUM }}
             className="fixed inset-0 z-40 bg-[#08080a]/98 backdrop-blur-2xl pt-20 px-6 overflow-y-auto flex flex-col justify-between"
           >
             <div className="max-w-6xl mx-auto w-full py-8">
@@ -186,12 +230,20 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
                 </span>
               </div>
 
+              {/* Staggered Links */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {navLinks.map((link) => (
-                  <button
+                {navLinks.map((link, idx) => (
+                  <motion.button
                     key={link.num}
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.45,
+                      delay: prefersReduced ? 0 : 0.12 + idx * 0.05,
+                      ease: EASE_PREMIUM,
+                    }}
                     onClick={() => handleNavClick(link.href)}
-                    className="group text-left p-5 rounded-lg border border-white/[0.06] bg-white/[0.015] hover:bg-white/[0.04] hover:border-[#c8ff3d]/40 transition-all flex items-start justify-between"
+                    className="group text-left p-5 rounded-lg border border-white/[0.06] bg-white/[0.015] hover:bg-white/[0.04] hover:border-[#c8ff3d]/40 transition-all flex items-start justify-between cursor-pointer"
                   >
                     <div>
                       <div className="flex items-center gap-3">
@@ -207,12 +259,17 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
                       </p>
                     </div>
                     <ArrowUpRight className="w-5 h-5 text-zinc-500 group-hover:text-[#c8ff3d] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                  </button>
+                  </motion.button>
                 ))}
               </div>
 
               {/* Extra Agency & System Telemetry */}
-              <div className="mt-8 p-6 rounded-xl border border-white/[0.08] bg-zinc-950/60 grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-xs text-zinc-400">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+                className="mt-8 p-6 rounded-xl border border-white/[0.08] bg-zinc-950/60 grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-xs text-zinc-400"
+              >
                 <div>
                   <div className="text-zinc-500 uppercase tracking-wider mb-1">
                     ENGINE SPECIFICATION
@@ -237,12 +294,12 @@ export function Navbar({ onOpenDemo }: NavbarProps) {
                       setMenuOpen(false);
                       onOpenDemo();
                     }}
-                    className="text-[#c8ff3d] underline hover:text-white transition-colors text-left"
+                    className="text-[#c8ff3d] underline hover:text-white transition-colors text-left cursor-pointer"
                   >
                     Launch 90-sec Video Walkthrough &rarr;
                   </button>
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             <div className="max-w-6xl mx-auto w-full py-6 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-zinc-500">
