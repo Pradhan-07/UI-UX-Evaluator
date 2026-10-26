@@ -47,6 +47,7 @@ export const metadata: Metadata = {
 };
 
 import { CustomCursor } from "@/components/CustomCursor";
+import { SmoothScrollProvider, ScrollProgressBar } from "@/lib/motion";
 
 export default function RootLayout({
   children,
@@ -59,8 +60,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} dark antialiased scroll-smooth`}
     >
       <body className="min-h-screen bg-[#08080a] text-[#f2f2f2] font-sans selection:bg-[#c8ff3d] selection:text-black">
-        <CustomCursor />
-        {children}
+        <SmoothScrollProvider>
+          <ScrollProgressBar />
+          <CustomCursor />
+          {children}
+        </SmoothScrollProvider>
       </body>
     </html>
   );
