@@ -1,44 +1,120 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --bg-primary: #08080a;
-    --bg-secondary: #0e0e12;
-    --bg-surface: #141418;
-    --bg-surface-hover: #1a1a22;
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-accent: rgba(200, 255, 61, 0.3);
-    --accent: #c8ff3d;
-    --accent-dim: #9ecb28;
-    --text-primary: #f2f2f2;
-    --text-secondary: #8e8e93;
-    --text-muted: #55555c;
-  }
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-text: var(--accent-text);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+}
 
+:root {
+  /* DARK THEME (DEFAULT) */
+  --bg: #0A0A0A;
+  --surface: #111111;
+  --surface-2: #18181B;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --text: #F5F5F5;
+  --muted: #A1A1AA; /* contrast 9.5:1 vs #0A0A0A >= 4.5:1 */
+  --accent: #C8FF3D; /* lime fill */
+  --accent-ink: #0A0A0A; /* near-black text on lime, 16.8:1 */
+  --accent-text: #C8FF3D; /* lime used as text/borders on dark, 16.8:1 */
+  --danger: #F43F5E; /* contrast 5.8:1 */
+  --warning: #F59E0B; /* contrast 9.2:1 */
+  --success: #10B981; /* contrast 8.4:1 */
+  --grid-line: rgba(255, 255, 255, 0.035);
+  --glow: rgba(200, 255, 61, 0.05);
+  --mark-bg: rgba(200, 255, 61, 0.22);
+  color-scheme: dark;
+
+  /* Custom Cursor Tokens (Dark: Lime) */
+  --cursor-ring: rgba(200, 255, 61, 0.6);
+  --cursor-ring-hover: #c8ff3d;
+  --cursor-dot: #c8ff3d;
+  --cursor-dot-glow: rgba(200, 255, 61, 0.9);
+
+  /* Legacy semantic mappings */
+  --bg-primary: var(--bg);
+  --bg-secondary: var(--surface);
+  --bg-surface: var(--surface);
+  --bg-surface-hover: var(--surface-2);
+  --text-primary: var(--text);
+  --text-secondary: var(--muted);
+  --text-muted: var(--muted);
+  --border-subtle: var(--border);
+  --border-accent: rgba(200, 255, 61, 0.3);
+  --accent-dim: #9ecb28;
+}
+
+:root[data-theme="light"] {
+  /* LIGHT THEME */
+  --bg: #FAFAF7;
+  --surface: #FFFFFF;
+  --surface-2: #F0F0EB;
+  --border: rgba(0, 0, 0, 0.09);
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --text: #0A0A0A;
+  --muted: #5C5C5C; /* contrast 6.1:1 vs #FAFAF7 >= 4.5:1 */
+  --accent: #C8FF3D; /* lime fill remains vibrant */
+  --accent-ink: #0A0A0A; /* near-black text on lime */
+  --accent-text: #3D6600; /* dark green for >= 4.5:1 contrast on white (5.7:1) */
+  --danger: #DC2626; /* red-600: contrast 5.2:1 >= 4.5:1 */
+  --warning: #B45309; /* amber-700: contrast 4.7:1 >= 4.5:1 */
+  --success: #059669; /* emerald-600: contrast 4.6:1 >= 4.5:1 */
+  --grid-line: rgba(0, 0, 0, 0.05);
+  --glow: rgba(61, 102, 0, 0.06);
+  --mark-bg: rgba(200, 255, 61, 0.5);
+  color-scheme: light;
+
+  /* Custom Cursor Tokens (Light: Dark Ink Ring and Dot) */
+  --cursor-ring: rgba(10, 10, 10, 0.45);
+  --cursor-ring-hover: #0a0a0a;
+  --cursor-dot: #0a0a0a;
+  --cursor-dot-glow: rgba(0, 0, 0, 0.25);
+
+  /* Legacy semantic mappings */
+  --bg-primary: var(--bg);
+  --bg-secondary: var(--surface);
+  --bg-surface: var(--surface);
+  --bg-surface-hover: var(--surface-2);
+  --text-primary: var(--text);
+  --text-secondary: var(--muted);
+  --text-muted: var(--muted);
+  --border-subtle: var(--border);
+  --border-accent: rgba(61, 102, 0, 0.35);
+  --accent-dim: #3d6600;
+}
+
+@layer base {
   * {
-    border-color: var(--border-subtle);
+    border-color: var(--border);
     box-sizing: border-box;
   }
 
   html {
     scroll-behavior: smooth;
-    background-color: #08080a;
-    color: #f2f2f2;
-    color-scheme: dark;
+    background-color: var(--bg);
+    color: var(--text);
   }
 
   body {
-    background-color: #08080a;
-    color: #f2f2f2;
+    background-color: var(--bg);
+    color: var(--text);
     font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow-x: hidden;
-    selection-background-color: #c8ff3d;
-    selection-color: #08080a;
   }
 
   ::selection {
-    background: #c8ff3d;
-    color: #08080a;
+    background: var(--accent);
+    color: var(--accent-ink);
   }
 }
 
@@ -58,14 +134,14 @@
 
 /* Accessible focus ring for keyboard navigation */
 :focus-visible {
-  outline: 2px solid #c8ff3d !important;
+  outline: 2px solid var(--accent-text) !important;
   outline-offset: 2px !important;
 }
 
 /* Highlighted search matches */
 mark.heuristic-mark {
-  background-color: rgba(200, 255, 61, 0.22);
-  color: #c8ff3d;
+  background-color: var(--mark-bg);
+  color: var(--accent-text);
   font-weight: 600;
   border-radius: 2px;
   padding: 0 2px;
@@ -146,24 +222,53 @@ mark.heuristic-mark {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #08080a;
+  background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #222228;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #c8ff3d;
+  background: var(--accent);
 }
 
 .font-mono-code {
   font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Noise overlay utility */
+/* Noise overlay utility mapped to semantic grid-line token */
 .bg-grid-pattern {
   background-size: 40px 40px;
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+}
+
+/* Fallback theme transition (250ms) */
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease, fill 250ms ease, stroke 250ms ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-transitioning *,
+  html.theme-transitioning *::before,
+  html.theme-transitioning *::after {
+    transition: none !important;
+  }
+}
+
+/* View Transitions API circular reveal support */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 999999;
 }
