@@ -19,6 +19,8 @@ import {
   Maximize2,
   ExternalLink,
   ChevronRight,
+  ChevronLeft,
+  Layers,
   Filter,
   CheckCircle2,
   Cpu,
@@ -43,6 +45,8 @@ export function LiveAnalyzer() {
   // Custom upload state
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [uploadedFileObjects, setUploadedFileObjects] = useState<File[]>([]);
+  const [activeScreenIndex, setActiveScreenIndex] = useState<number>(0);
+  const [screenFilter, setScreenFilter] = useState<"all" | number>("all");
   const [isDraggingOver, setIsDraggingOver] = useState<boolean>(false);
   const prefersReduced = useReducedMotion();
 
@@ -56,6 +60,7 @@ export function LiveAnalyzer() {
   
   // Backend connection & AI status
   const [backendHealth, setBackendHealth] = useState<BackendHealth | null>(null);
+  const [backendPort, setBackendPort] = useState<number>(5001);
   const [aiSource, setAiSource] = useState<string>("gemini");
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [roadmap, setRoadmap] = useState<string[]>([]);
@@ -91,6 +96,7 @@ export function LiveAnalyzer() {
         if (res.ok) {
           const data = await res.json();
           setBackendHealth(data);
+          setBackendPort(5001);
           return;
         }
       } catch {
@@ -101,6 +107,7 @@ export function LiveAnalyzer() {
         if (res2.ok) {
           const data2 = await res2.json();
           setBackendHealth(data2);
+          setBackendPort(5000);
         }
       } catch {
         setBackendHealth(null);
@@ -108,6 +115,19 @@ export function LiveAnalyzer() {
     };
     checkBackend();
   }, []);
+
+  // Compute multi-screen image list
+  const screenImages: string[] =
+    uploadedImages.length > 0
+      ? uploadedImages
+      : activePreset.images && activePreset.images.length > 0
+      ? activePreset.images
+      : activePreset.imageSrc
+      ? [activePreset.imageSrc]
+      : [];
+
+  const totalScreens = screenImages.length;
+  const displayImageSrc = screenImages[activeScreenIndex] || screenImages[0] || null;
 
   // Dynamic Usability Score calculation based on resolved issues
   const initialPenaltyTotal = issues.reduce((acc, issue) => acc + issue.scorePenalty, 0);
@@ -129,11 +149,14 @@ export function LiveAnalyzer() {
     setAiSummary(null);
     setRoadmap([]);
     setActivePinId(preset.issues[0]?.id || null);
+    setActiveScreenIndex(0);
+    setScreenFilter("all");
     if (preset.steps) {
       setJourneySteps(preset.steps);
     }
   };
 
+  // Run Real Backend Analysis
   // Run Real Backend Analysis
   const handleRunAnalysis = async () => {
     playMicroClick(1150);
@@ -151,8 +174,8 @@ export function LiveAnalyzer() {
       });
     }, 800);
 
-    const backendPort = backendHealth ? 5001 : 5001;
-    const backendUrl = `http://localhost:${backendPort}/api/analyze`;
+    const port = backendPort || 5001;
+    const backendUrl = `http://localhost:${port}/api/analyze`;
 
     try {
       const formData = new FormData();
@@ -162,20 +185,25 @@ export function LiveAnalyzer() {
           formData.append("screenshots", file);
         });
       } else {
-        // Fetch current preset image as a blob
-        try {
-          const sampleUrl = activePreset.imageSrc || "/samples/checkout.jpg";
-          const imgRes = await fetch(sampleUrl);
-          const blob = await imgRes.blob();
-          formData.append("screenshots", blob, "screen.jpg");
-        } catch (fetchErr) {
-          console.warn("Could not convert preset image to blob:", fetchErr);
+        // Fetch current preset image(s) as blob(s)
+        const presetUrls = activePreset.images && activePreset.images.length > 0
+          ? activePreset.images
+          : [activePreset.imageSrc || "/samples/checkout.jpg"];
+
+        for (let i = 0; i < presetUrls.length; i++) {
+          try {
+            const imgRes = await fetch(presetUrls[i]);
+            const blob = await imgRes.blob();
+            formData.append("screenshots", blob, `screen-${i + 1}.jpg`);
+          } catch (fetchErr) {
+            console.warn("Could not convert preset image to blob:", presetUrls[i], fetchErr);
+          }
         }
       }
 
       formData.append("appName", activePreset.name || "App Evaluation");
       formData.append("targetUser", contextNote || "First-time mobile shoppers");
-      formData.append("task", "Complete primary conversion action");
+      formData.append("task", "Complete primary conversion action across multi-screen journey");
       formData.append("platform", "mobile");
 
       const response = await fetch(backendUrl, {
@@ -205,7 +233,9 @@ export function LiveAnalyzer() {
           { x: 50, y: 55 },
           { x: 78, y: 72 },
           { x: 50, y: 83 },
-          { x: 24, y: 15 },
+          { x: 24, y: 22 },
+          { x: 65, y: 65 },
+          { x: 32, y: 78 },
         ];
 
         interface BackendIssue {
@@ -217,15 +247,33 @@ export function LiveAnalyzer() {
           impact: string;
           fix: string;
           effort?: string;
+          pinLocation?: { x: number; y: number };
         }
+
+        const screensInScope = uploadedFileObjects.length > 0
+          ? uploadedFileObjects.length
+          : Math.max(1, totalScreens);
 
         const mappedIssues: UsabilityIssue[] = (data.issues || []).map(
           (item: BackendIssue, idx: number) => {
             const sev = (item.severity?.toLowerCase() as Severity) || "medium";
+            const screenNum = Math.min(
+              Math.max(1, Number(item.screen) || 1),
+              screensInScope
+            );
+            const fallbackPin = pinPositions[idx % pinPositions.length];
+            const pinLoc =
+              item.pinLocation &&
+              typeof item.pinLocation.x === "number" &&
+              typeof item.pinLocation.y === "number"
+                ? item.pinLocation
+                : fallbackPin;
+
             return {
               id: `api-issue-${idx + 1}-${Date.now()}`,
               pinNumber: idx + 1,
-              pinLocation: pinPositions[idx % pinPositions.length],
+              screenNumber: screenNum,
+              pinLocation: pinLoc,
               title: item.title,
               severity: sev,
               heuristic: item.heuristic || "Nielsen Heuristic",
@@ -233,7 +281,7 @@ export function LiveAnalyzer() {
               impact: item.impact || item.evidence || "Impairs usability and increases friction.",
               fix: {
                 summary: item.fix,
-                codeSnippet: `// Concrete fix for: ${item.title} (${item.effort || "Quick win"})\n// Heuristic: ${item.heuristic}\n/* ${item.fix} */`,
+                codeSnippet: `// Concrete fix for: ${item.title} (${item.effort || "Quick win"})\n// Screen 0${screenNum} • Heuristic: ${item.heuristic}\n/* ${item.fix} */`,
               },
               scorePenalty: sev === "critical" ? 14 : sev === "high" ? 9 : sev === "medium" ? 5 : 2,
               isResolved: false,
@@ -244,6 +292,9 @@ export function LiveAnalyzer() {
         if (mappedIssues.length > 0) {
           setIssues(mappedIssues);
           setActivePinId(mappedIssues[0].id);
+          const firstScreen = mappedIssues[0].screenNumber || 1;
+          setActiveScreenIndex(firstScreen - 1);
+          setScreenFilter("all");
         }
       }
     } catch (err) {
@@ -251,6 +302,7 @@ export function LiveAnalyzer() {
       // Keep existing preset issues as reliable fallback
       setIssues(activePreset.issues);
       setActivePinId(activePreset.issues[0]?.id || null);
+      setActiveScreenIndex(0);
     } finally {
       clearInterval(stepInterval);
       setIsAnalyzing(false);
@@ -265,23 +317,32 @@ export function LiveAnalyzer() {
     if (!files || files.length === 0) return;
 
     playMicroClick(950);
-    const newUrls: string[] = [];
-    const fileArray = Array.from(files);
-    setUploadedFileObjects((prev) => [...prev, ...fileArray]);
+    const incomingFiles = Array.from(files).slice(0, 5);
+    const newUrls = incomingFiles.map((f) => URL.createObjectURL(f));
 
-    fileArray.forEach((file) => {
-      const url = URL.createObjectURL(file);
-      newUrls.push(url);
-    });
-
-    setUploadedImages((prev) => [...prev, ...newUrls]);
+    setUploadedFileObjects((prev) => [...prev, ...incomingFiles].slice(0, 5));
+    setUploadedImages((prev) => [...prev, ...newUrls].slice(0, 5));
+    setActiveScreenIndex(0);
+    setScreenFilter("all");
     setInputMode("screenshot");
+
+    // Reset input value so same files can be chosen again if needed
+    e.target.value = "";
   };
 
   // Handle Pin Click
   const handlePinClick = (issueId: string) => {
     playPinSelect();
     setActivePinId(issueId);
+
+    const targetIssue = issues.find((i) => i.id === issueId);
+    if (targetIssue && targetIssue.screenNumber) {
+      const sIdx = targetIssue.screenNumber - 1;
+      if (sIdx >= 0 && sIdx < totalScreens && sIdx !== activeScreenIndex) {
+        setActiveScreenIndex(sIdx);
+      }
+    }
+
     // Scroll matching card into view smoothly
     const cardEl = document.getElementById(`card-${issueId}`);
     if (cardEl && cardsContainerRef.current) {
@@ -333,6 +394,7 @@ export function LiveAnalyzer() {
       issues: issues.map((i) => ({
         id: i.id,
         pin: i.pinNumber,
+        screen: i.screenNumber || 1,
         title: i.title,
         severity: i.severity,
         heuristic: i.heuristic,
@@ -351,10 +413,11 @@ export function LiveAnalyzer() {
     URL.revokeObjectURL(url);
   };
 
-  // Filtered issues list
+  // Filtered issues list (by Severity and Screen)
   const filteredIssues = issues.filter((i) => {
-    if (severityFilter === "all") return true;
-    return i.severity === severityFilter;
+    const matchesSeverity = severityFilter === "all" || i.severity === severityFilter;
+    const matchesScreen = screenFilter === "all" || (i.screenNumber || 1) === screenFilter;
+    return matchesSeverity && matchesScreen;
   });
 
   const getSeverityBadge = (sev: Severity) => {
@@ -385,10 +448,6 @@ export function LiveAnalyzer() {
         };
     }
   };
-
-  // Active display image: custom upload or active preset image
-  const displayImageSrc =
-    uploadedImages.length > 0 ? uploadedImages[0] : activePreset.imageSrc;
 
   return (
     <section
@@ -510,11 +569,14 @@ export function LiveAnalyzer() {
                       e.preventDefault();
                       setIsDraggingOver(false);
                       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                        const fileArray = Array.from(e.dataTransfer.files);
-                        setUploadedFileObjects((prev) => [...prev, ...fileArray]);
-                        const urls = fileArray.map((f) => URL.createObjectURL(f));
-                        setUploadedImages((prev) => [...prev, ...urls]);
                         playMicroClick(1000);
+                        const incomingFiles = Array.from(e.dataTransfer.files).slice(0, 5);
+                        const newUrls = incomingFiles.map((f) => URL.createObjectURL(f));
+                        setUploadedFileObjects((prev) => [...prev, ...incomingFiles].slice(0, 5));
+                        setUploadedImages((prev) => [...prev, ...newUrls].slice(0, 5));
+                        setActiveScreenIndex(0);
+                        setScreenFilter("all");
+                        setInputMode("screenshot");
                       }
                     }}
                     animate={
@@ -580,21 +642,38 @@ export function LiveAnalyzer() {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.5, y: -15 }}
                             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                            className="relative w-16 h-20 rounded-lg overflow-hidden border border-border bg-surface shrink-0 group shadow-sm"
+                            onClick={() => {
+                              playMicroClick(1000);
+                              setActiveScreenIndex(idx);
+                            }}
+                            className={`relative w-16 h-20 rounded-lg overflow-hidden border bg-surface shrink-0 group shadow-sm cursor-pointer transition-all ${
+                              activeScreenIndex === idx
+                                ? "ring-2 ring-accent border-accent"
+                                : "border-border opacity-70 hover:opacity-100"
+                            }`}
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={src}
-                              alt="upload thumb"
+                              alt={`upload thumb ${idx + 1}`}
                               className="w-full h-full object-cover"
                             />
+                            <div className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-xs text-[9px] font-mono text-white font-bold leading-none">
+                              0{idx + 1}
+                            </div>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setUploadedImages((prev) => prev.filter((_, i) => i !== idx));
-                                setUploadedFileObjects((prev) => prev.filter((_, i) => i !== idx));
+                                const nextImages = uploadedImages.filter((_, i) => i !== idx);
+                                const nextFiles = uploadedFileObjects.filter((_, i) => i !== idx);
+                                setUploadedImages(nextImages);
+                                setUploadedFileObjects(nextFiles);
+                                if (activeScreenIndex >= nextImages.length) {
+                                  setActiveScreenIndex(Math.max(0, nextImages.length - 1));
+                                }
                               }}
                               className="absolute top-1 right-1 p-1 rounded bg-surface/90 border border-border text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-sm"
+                              title="Delete screenshot"
                             >
                               <Trash2 className="w-3 h-3" />
                             </button>
@@ -605,8 +684,9 @@ export function LiveAnalyzer() {
                         onClick={() => {
                           setUploadedImages([]);
                           setUploadedFileObjects([]);
+                          setActiveScreenIndex(0);
                         }}
-                        className="text-xs font-mono text-muted hover:text-rose-500 underline pl-2 cursor-pointer"
+                        className="text-xs font-mono text-muted hover:text-rose-500 underline pl-2 cursor-pointer shrink-0"
                       >
                         Reset to preset
                       </button>
@@ -906,6 +986,47 @@ export function LiveAnalyzer() {
                   </motion.button>
                 </div>
 
+                {/* Multi-Screen Filter Pills when multiple screens exist */}
+                {totalScreens > 1 && (
+                  <div className="flex items-center gap-1 p-1 rounded-lg bg-surface-2 border border-border font-mono text-xs">
+                    <span className="text-[10px] font-mono text-muted uppercase px-1.5 flex items-center gap-1">
+                      <Filter className="w-3 h-3 text-accent-text" />
+                      <span>Screen:</span>
+                    </span>
+                    <button
+                      onClick={() => setScreenFilter("all")}
+                      className={`px-2 py-1 rounded cursor-pointer transition-colors ${
+                        screenFilter === "all"
+                          ? "bg-surface text-text font-bold shadow-sm"
+                          : "text-muted hover:text-text"
+                      }`}
+                    >
+                      All
+                    </button>
+                    {screenImages.map((_, sIdx) => {
+                      const count = issues.filter((i) => (i.screenNumber || 1) === sIdx + 1).length;
+                      const isSelected = screenFilter === sIdx + 1;
+                      return (
+                        <button
+                          key={sIdx}
+                          onClick={() => {
+                            playMicroClick(1000);
+                            setScreenFilter(sIdx + 1);
+                            setActiveScreenIndex(sIdx);
+                          }}
+                          className={`px-2 py-1 rounded cursor-pointer transition-colors ${
+                            isSelected
+                              ? "bg-accent text-accent-ink font-bold shadow-sm"
+                              : "text-muted hover:text-text"
+                          }`}
+                        >
+                          Scr 0{sIdx + 1} ({count})
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
                 {/* Export Report CTA */}
                 <button
                   onClick={handleExportReport}
@@ -923,6 +1044,79 @@ export function LiveAnalyzer() {
               {/* Left Pane: Interactive Screenshot with Numbered Pins (5 cols) */}
               <div className="lg:col-span-5 lg:sticky lg:top-24">
                 <div className="p-4 sm:p-5 rounded-2xl border border-border bg-surface shadow-sm">
+                  {/* Multi-Screen Navigation Toolbar */}
+                  {totalScreens > 1 && (
+                    <div className="flex items-center justify-between mb-3 px-2 py-1.5 rounded-xl bg-surface-2 border border-border">
+                      <div className="flex items-center gap-1.5 overflow-x-auto">
+                        <span className="flex items-center gap-1 text-[11px] font-mono text-muted uppercase font-semibold">
+                          <Layers className="w-3.5 h-3.5 text-accent-text" />
+                          <span>Screens:</span>
+                        </span>
+                        {screenImages.map((_, sIdx) => {
+                          const count = issues.filter((i) => (i.screenNumber || 1) === sIdx + 1).length;
+                          const isActive = activeScreenIndex === sIdx;
+                          return (
+                            <button
+                              key={sIdx}
+                              onClick={() => {
+                                playMicroClick(1000);
+                                setActiveScreenIndex(sIdx);
+                              }}
+                              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-mono text-xs font-semibold transition-all cursor-pointer ${
+                                isActive
+                                  ? "bg-accent text-accent-ink shadow-sm"
+                                  : "bg-surface text-text border border-border hover:border-accent-text/40 hover:text-accent-text"
+                              }`}
+                            >
+                              <span>Screen 0{sIdx + 1}</span>
+                              <span
+                                className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                                  isActive
+                                    ? "bg-black/20 text-accent-ink"
+                                    : "bg-surface-2 text-muted"
+                                }`}
+                              >
+                                {count}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <div className="flex items-center gap-1 shrink-0 pl-2">
+                        <button
+                          onClick={() => {
+                            if (activeScreenIndex > 0) {
+                              playMicroClick(900);
+                              setActiveScreenIndex((prev) => prev - 1);
+                            }
+                          }}
+                          disabled={activeScreenIndex === 0}
+                          className="p-1.5 rounded-lg border border-border bg-surface text-text hover:border-accent-text disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                          title="Previous Screen"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="font-mono text-xs text-muted px-1">
+                          {activeScreenIndex + 1}/{totalScreens}
+                        </span>
+                        <button
+                          onClick={() => {
+                            if (activeScreenIndex < totalScreens - 1) {
+                              playMicroClick(1000);
+                              setActiveScreenIndex((prev) => prev + 1);
+                            }
+                          }}
+                          disabled={activeScreenIndex === totalScreens - 1}
+                          className="p-1.5 rounded-lg border border-border bg-surface text-text hover:border-accent-text disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                          title="Next Screen"
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between mb-3 font-mono text-xs text-muted">
                     <span className="flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-accent" />
@@ -940,58 +1134,67 @@ export function LiveAnalyzer() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={displayImageSrc}
-                          alt="Analyzed Application Screen"
+                          alt={`Analyzed Application Screen ${activeScreenIndex + 1}`}
                           className="w-full h-full object-contain pointer-events-none"
                         />
 
-                        {/* Interactive Pins Overlay */}
-                        {issues.map((issue) => {
-                          const isActive = activePinId === issue.id;
-                          const isHovered = hoveredPinId === issue.id;
-                          const badge = getSeverityBadge(issue.severity);
+                        {/* Interactive Pins Overlay Filtered to Current Active Screen */}
+                        {issues
+                          .filter((issue) => (issue.screenNumber || 1) === activeScreenIndex + 1)
+                          .map((issue) => {
+                            const isActive = activePinId === issue.id;
+                            const isHovered = hoveredPinId === issue.id;
+                            const badge = getSeverityBadge(issue.severity);
 
-                          return (
-                            <div
-                              key={issue.id}
-                              style={{
-                                left: `${issue.pinLocation.x}%`,
-                                top: `${issue.pinLocation.y}%`,
-                              }}
-                              className="absolute -translate-x-1/2 -translate-y-1/2 z-20"
-                            >
-                              <button
-                                onClick={() => handlePinClick(issue.id)}
-                                onMouseEnter={() => setHoveredPinId(issue.id)}
-                                onMouseLeave={() => setHoveredPinId(null)}
-                                className={`group relative w-7 h-7 sm:w-8 sm:h-8 rounded-full font-mono text-xs font-bold flex items-center justify-center transition-all cursor-pointer ${
-                                  issue.isResolved
-                                    ? "bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]"
-                                    : isActive || isHovered
-                                    ? "bg-accent text-accent-ink scale-125 shadow-[0_0_18px_rgba(200,255,61,0.8)] z-30"
-                                    : issue.severity === "critical"
-                                    ? "bg-rose-500 text-white pin-pulse shadow-[0_0_12px_rgba(244,63,94,0.6)]"
-                                    : issue.severity === "high"
-                                    ? "bg-amber-500 text-black shadow-[0_0_10px_rgba(245,158,11,0.5)]"
-                                    : "bg-surface text-text border border-border shadow-sm"
-                                }`}
+                            return (
+                              <div
+                                key={issue.id}
+                                style={{
+                                  left: `${issue.pinLocation.x}%`,
+                                  top: `${issue.pinLocation.y}%`,
+                                }}
+                                className="absolute -translate-x-1/2 -translate-y-1/2 z-20"
                               >
-                                {issue.isResolved ? (
-                                  <Check className="w-4 h-4 stroke-[3]" />
-                                ) : (
-                                  <span>0{issue.pinNumber}</span>
-                                )}
+                                <button
+                                  onClick={() => handlePinClick(issue.id)}
+                                  onMouseEnter={() => setHoveredPinId(issue.id)}
+                                  onMouseLeave={() => setHoveredPinId(null)}
+                                  className={`group relative w-7 h-7 sm:w-8 sm:h-8 rounded-full font-mono text-xs font-bold flex items-center justify-center transition-all cursor-pointer ${
+                                    issue.isResolved
+                                      ? "bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]"
+                                      : isActive || isHovered
+                                      ? "bg-accent text-accent-ink scale-125 shadow-[0_0_18px_rgba(200,255,61,0.8)] z-30"
+                                      : issue.severity === "critical"
+                                      ? "bg-rose-500 text-white pin-pulse shadow-[0_0_12px_rgba(244,63,94,0.6)]"
+                                      : issue.severity === "high"
+                                      ? "bg-amber-500 text-black shadow-[0_0_10px_rgba(245,158,11,0.5)]"
+                                      : "bg-surface text-text border border-border shadow-sm"
+                                  }`}
+                                >
+                                  {issue.isResolved ? (
+                                    <Check className="w-4 h-4 stroke-[3]" />
+                                  ) : (
+                                    <span>0{issue.pinNumber}</span>
+                                  )}
 
-                                {/* Hover tooltip */}
-                                <div className="absolute left-1/2 bottom-full -translate-x-1/2 mb-2 w-48 p-2.5 rounded-lg bg-surface border border-border text-[11px] font-sans font-normal text-text opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-40 text-center shadow-xl">
-                                  <span className="font-mono text-[9px] uppercase tracking-wider block text-accent-text font-bold">
-                                    [{badge.label}]
-                                  </span>
-                                  {issue.title}
-                                </div>
-                              </button>
-                            </div>
-                          );
-                        })}
+                                  {/* Hover tooltip */}
+                                  <div className="absolute left-1/2 bottom-full -translate-x-1/2 mb-2 w-48 p-2.5 rounded-lg bg-surface border border-border text-[11px] font-sans font-normal text-text opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-40 text-center shadow-xl">
+                                    <span className="font-mono text-[9px] uppercase tracking-wider block text-accent-text font-bold">
+                                      [{badge.label}]
+                                    </span>
+                                    {issue.title}
+                                  </div>
+                                </button>
+                              </div>
+                            );
+                          })}
+
+                        {/* Empty screen feedback if no pins on active screen */}
+                        {issues.filter((issue) => (issue.screenNumber || 1) === activeScreenIndex + 1).length === 0 && (
+                          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-surface/90 border border-border backdrop-blur-sm text-[11px] font-mono text-muted text-center pointer-events-none shadow-sm">
+                            No issues flagged on Screen 0{activeScreenIndex + 1}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       /* Journey Step representation if no image */
@@ -1031,9 +1234,15 @@ export function LiveAnalyzer() {
                         delay: idx * 0.06,
                         ease: [0.22, 1, 0.36, 1],
                       }}
+                      onClick={() => {
+                        if (issue.screenNumber && issue.screenNumber !== activeScreenIndex + 1) {
+                          setActiveScreenIndex(issue.screenNumber - 1);
+                        }
+                        setActivePinId(issue.id);
+                      }}
                       onMouseEnter={() => setHoveredPinId(issue.id)}
                       onMouseLeave={() => setHoveredPinId(null)}
-                      className={`p-6 rounded-2xl border transition-all ${
+                      className={`p-6 rounded-2xl border transition-all cursor-pointer ${
                         issue.isResolved
                           ? "bg-surface/50 border-border opacity-60"
                           : isActive || isHovered
@@ -1046,11 +1255,36 @@ export function LiveAnalyzer() {
                         <div className="flex flex-wrap items-center gap-2">
                           {/* Pin Reference */}
                           <button
-                            onClick={() => handlePinClick(issue.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePinClick(issue.id);
+                            }}
                             className="w-6 h-6 rounded-md bg-accent/20 text-accent-text border border-accent/40 font-mono text-xs font-bold flex items-center justify-center hover:bg-accent hover:text-accent-ink transition-colors cursor-pointer"
                           >
                             #{issue.pinNumber}
                           </button>
+
+                          {/* Screen Number Badge if multi-screen */}
+                          {totalScreens > 1 && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                playMicroClick();
+                                const sIdx = (issue.screenNumber || 1) - 1;
+                                setActiveScreenIndex(sIdx);
+                                setActivePinId(issue.id);
+                              }}
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[10px] font-bold border transition-colors cursor-pointer ${
+                                (issue.screenNumber || 1) === activeScreenIndex + 1
+                                  ? "bg-accent/20 border-accent/50 text-accent-text"
+                                  : "bg-surface-2 border-border text-muted hover:text-text hover:border-accent-text/40"
+                              }`}
+                              title={`Jump to Screen 0${issue.screenNumber || 1}`}
+                            >
+                              <Layers className="w-2.5 h-2.5" />
+                              <span>SCR 0{issue.screenNumber || 1}</span>
+                            </button>
+                          )}
 
                           {/* Severity Pill */}
                           <span

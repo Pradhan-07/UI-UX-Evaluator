@@ -8,6 +8,7 @@ export interface PinLocation {
 export interface UsabilityIssue {
   id: string;
   pinNumber: number;
+  screenNumber?: number; // 1-indexed screen in multi-screen flow
   pinLocation: PinLocation;
   title: string;
   severity: Severity;
@@ -29,6 +30,7 @@ export interface AuditPreset {
   category: string;
   type: "screenshot" | "journey";
   imageSrc?: string;
+  images?: string[]; // optional multi-screen flow images
   description: string;
   context: string;
   steps?: string[];

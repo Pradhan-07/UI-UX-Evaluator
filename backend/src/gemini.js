@@ -14,12 +14,15 @@ export async function analyzeWithGemini(images, context) {
   const prompt = buildPrompt({ ...context, screenCount: images.length });
   const parts = [
     { text: prompt },
-    ...images.map((img) => ({
-      inlineData: {
-        data: img.buffer.toString("base64"),
-        mimeType: img.mimetype,
+    ...images.flatMap((img, idx) => [
+      { text: `\n=== SCREEN ${idx + 1} OF ${images.length} (Journey Step ${idx + 1}) ===\n` },
+      {
+        inlineData: {
+          data: img.buffer.toString("base64"),
+          mimeType: img.mimetype,
+        },
       },
-    })),
+    ]),
   ];
 
   const result = await Promise.race([
