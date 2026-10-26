@@ -28,7 +28,9 @@ Automated unit, integration, and end-to-end tests only verify that code executes
 
 ```bash
 HAKATHON/
-├── octoberfest 2/                              # Express AI Backend API (Port 5001 / 5000)
+├── octoberfest 2/
+      backend
+                             # Express AI Backend API (Port 5001 / 5000)
 │   ├── src/
 │   │   ├── analyze.js                   # Orchestration: picks Gemini Vision or Mock AI
 │   │   ├── config.js                    # Env parser, model config, CORS policies
