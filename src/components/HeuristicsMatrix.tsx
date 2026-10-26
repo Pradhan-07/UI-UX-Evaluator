@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-mot
 import { Search, Sparkles, X, RotateCcw } from "lucide-react";
 import { HEURISTICS_DATABASE, HeuristicDetail } from "@/data/heuristics";
 import { playMicroClick } from "@/utils/audio";
+import { ScrambleText } from "@/lib/motion";
 
 // Animated counter component for chip counts
 function AnimatedCount({ value }: { value: number }) {
@@ -36,54 +37,6 @@ function AnimatedCount({ value }: { value: number }) {
   }, [value]);
 
   return <span className="tabular-nums font-mono text-[11px] opacity-80">({displayValue})</span>;
-}
-
-// Scramble text effect for Rule ID (e.g. [N-01])
-function ScrambleId({ text, disabled }: { text: string; disabled: boolean }) {
-  const [displayText, setDisplayText] = useState(`[${text}]`);
-  const isScrambling = useRef(false);
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#*!";
-
-  const handleHover = () => {
-    if (disabled || isScrambling.current) return;
-    isScrambling.current = true;
-    const original = `[${text}]`;
-    const length = original.length;
-    const duration = 380;
-    const startTime = performance.now();
-
-    const interval = setInterval(() => {
-      const elapsed = performance.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const revealedCount = Math.floor(progress * length);
-
-      let scrambled = "";
-      for (let i = 0; i < length; i++) {
-        if (i < revealedCount) {
-          scrambled += original[i];
-        } else {
-          scrambled += chars[Math.floor(Math.random() * chars.length)];
-        }
-      }
-
-      setDisplayText(scrambled);
-
-      if (progress >= 1) {
-        clearInterval(interval);
-        setDisplayText(original);
-        isScrambling.current = false;
-      }
-    }, 30);
-  };
-
-  return (
-    <span
-      onMouseEnter={handleHover}
-      className="font-mono text-xs sm:text-sm font-bold text-[#c8ff3d] tracking-wider select-none cursor-default inline-block"
-    >
-      {displayText}
-    </span>
-  );
 }
 
 // Text highlighting utility
@@ -410,9 +363,11 @@ export function HeuristicsMatrix() {
                 <div className="relative z-10">
                   {/* Card Header: Rule ID with scramble effect + Category badge */}
                   <div className="flex items-center justify-between font-mono text-xs mb-3.5">
-                    <ScrambleId
-                      text={rule.number}
-                      disabled={prefersReducedMotion}
+                    <ScrambleText
+                      text={`[${rule.number}]`}
+                      triggerOnHover={!prefersReducedMotion}
+                      duration={380}
+                      className="font-mono text-xs sm:text-sm font-bold text-[#c8ff3d] tracking-wider select-none cursor-default"
                     />
                     <span className="px-2.5 py-0.5 rounded bg-white/[0.06] border border-white/15 text-zinc-300 text-[11px] font-mono uppercase tracking-wide">
                       {rule.category}

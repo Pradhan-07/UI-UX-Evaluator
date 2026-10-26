@@ -347,7 +347,9 @@ export function Magnetic({
   );
 }
 
-// 8) <ScrambleText />: Decoding text effect
+// 8) <ScrambleText />: Decoding text effect with zero layout shift
+const UPPERCASE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
 export function ScrambleText({
   text,
   duration = 400,
@@ -361,10 +363,11 @@ export function ScrambleText({
 }) {
   const [displayText, setDisplayText] = useState(text);
   const isRunning = useRef(false);
+  const hasRun = useRef(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
   const prefersReduced = useReducedMotion();
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%*!<>_";
 
   const runScramble = () => {
     if (prefersReduced || isRunning.current) return;
@@ -372,7 +375,9 @@ export function ScrambleText({
     const len = text.length;
     const startTime = performance.now();
 
-    const interval = setInterval(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    intervalRef.current = setInterval(() => {
       const elapsed = performance.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const revealed = Math.floor(progress * len);
@@ -382,15 +387,17 @@ export function ScrambleText({
         if (i < revealed) {
           result += text[i];
         } else {
-          result += chars[Math.floor(Math.random() * chars.length)];
+          result += UPPERCASE_CHARS[Math.floor(Math.random() * UPPERCASE_CHARS.length)];
         }
       }
       setDisplayText(result);
 
       if (progress >= 1) {
-        clearInterval(interval);
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        intervalRef.current = null;
         setDisplayText(text);
         isRunning.current = false;
+        hasRun.current = true;
       }
     }, 30);
   };
@@ -400,19 +407,37 @@ export function ScrambleText({
       setDisplayText(text);
       return;
     }
-    if (!triggerOnHover && inView) {
+    if (!triggerOnHover && inView && !hasRun.current) {
       runScramble();
     }
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, [inView, triggerOnHover, text, prefersReduced]);
 
   return (
     <span
       ref={ref}
       onMouseEnter={triggerOnHover ? runScramble : undefined}
-      className={className}
-      aria-label={text}
+      className={`relative inline-block ${className}`}
     >
-      <span aria-hidden="true">{displayText}</span>
+      {/* Real text preserved in DOM for layout sizing and screen readers (transparent, nowrap) */}
+      <span
+        style={{ color: "transparent", whiteSpace: "nowrap" }}
+        className="select-none"
+      >
+        {text}
+      </span>
+      {/* Absolutely positioned overlay for scrambled glyphs (aria-hidden) */}
+      <span
+        className="absolute inset-0 select-none whitespace-nowrap pointer-events-none"
+        aria-hidden="true"
+      >
+        {displayText}
+      </span>
     </span>
   );
 }
