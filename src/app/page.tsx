@@ -12,11 +12,16 @@ import { HeuristicsMatrix } from "@/components/HeuristicsMatrix";
 import { Footer } from "@/components/Footer";
 import { DemoModal } from "@/components/DemoModal";
 
+import { Loader } from "@/components/motion/Loader";
+
 export default function Home() {
   const [demoOpen, setDemoOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#08080a] text-[#f2f2f2] relative selection:bg-[#c8ff3d] selection:text-black">
+      {/* Step 1 Session Loader */}
+      <Loader />
+
       {/* Fixed Navigation Bar with Live Clock and Fullscreen Menu */}
       <Navbar onOpenDemo={() => setDemoOpen(true)} />
 
