@@ -1,52 +1,9 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { Sparkles, Cpu, Eye, Code2, ArrowUpRight } from "lucide-react";
-
-function CountUpStat({
-  target,
-  suffix = "",
-  decimals = 0,
-  duration = 2000,
-}: {
-  target: number;
-  suffix?: string;
-  decimals?: number;
-  duration?: number;
-}) {
-  const [val, setVal] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
-  useEffect(() => {
-    if (!isInView) return;
-
-    let startTime: number | null = null;
-    const startVal = 0;
-
-    const step = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      // Ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setVal(startVal + (target - startVal) * eased);
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      }
-    };
-
-    requestAnimationFrame(step);
-  }, [isInView, target, duration]);
-
-  return (
-    <div ref={ref} className="font-mono text-3xl sm:text-4xl lg:text-5xl font-black text-white">
-      {decimals > 0 ? val.toFixed(decimals) : Math.round(val).toLocaleString()}
-      <span className="text-[#c8ff3d] ml-1">{suffix}</span>
-    </div>
-  );
-}
+import React from "react";
+import { motion } from "framer-motion";
+import { Cpu, Eye, Code2 } from "lucide-react";
+import { CountUp, SectionLabel, Reveal, DURATIONS, EASE_PREMIUM, VIEWPORT } from "@/lib/motion";
 
 export function WhoWeAre() {
   const pillars = [
@@ -79,30 +36,32 @@ export function WhoWeAre() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-white/[0.08]">
           <div>
-            <div className="inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-zinc-400 mb-4">
-              <span className="text-[#c8ff3d] font-bold">[02]</span>
-              <span className="tracking-wider uppercase text-zinc-300">WHO WE ARE</span>
-              <span className="text-[#c8ff3d] font-bold blink-cursor">_</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
-              The Autonomous Eyes of UX.
-            </h2>
+            <SectionLabel number="02" label="WHO WE ARE" />
+            <Reveal delay={0.1}>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
+                The Autonomous Eyes of UX.
+              </h2>
+            </Reveal>
           </div>
 
-          <div className="font-mono text-xs text-zinc-400 max-w-xs">
-            TRANSFORMING SUBJECTIVE DESIGN OPINIONS INTO QUANTIFIABLE ENGINE FIXES.
-          </div>
+          <Reveal delay={0.2}>
+            <div className="font-mono text-xs text-zinc-400 max-w-xs">
+              TRANSFORMING SUBJECTIVE DESIGN OPINIONS INTO QUANTIFIABLE ENGINE FIXES.
+            </div>
+          </Reveal>
         </div>
 
         {/* Big Statement Paragraph */}
-        <div className="py-14 sm:py-20 max-w-5xl">
-          <p className="text-2xl sm:text-3xl md:text-4xl font-light text-zinc-200 leading-[1.35] tracking-tight">
-            Most digital products bleed up to <span className="text-white font-medium">40% of their conversion</span> not
-            from server downtime, but from <span className="text-[#c8ff3d] font-normal underline decoration-[#c8ff3d]/40 underline-offset-8">microscopic moments of human friction</span>.
-            We built FRICTION to act as an unblinking design partner: an autonomous intelligence layer that audits screens through
-            the rigorous science of cognitive psychology, Nielsen heuristics, and WCAG accessibility—delivering instant, engineering-ready fixes.
-          </p>
-        </div>
+        <Reveal delay={0.15}>
+          <div className="py-14 sm:py-20 max-w-5xl">
+            <p className="text-2xl sm:text-3xl md:text-4xl font-light text-zinc-200 leading-[1.35] tracking-tight">
+              Most digital products bleed up to <span className="text-white font-medium">40% of their conversion</span> not
+              from server downtime, but from <span className="text-[#c8ff3d] font-normal underline decoration-[#c8ff3d]/40 underline-offset-8">microscopic moments of human friction</span>.
+              We built FRICTION to act as an unblinking design partner: an autonomous intelligence layer that audits screens through
+              the rigorous science of cognitive psychology, Nielsen heuristics, and WCAG accessibility—delivering instant, engineering-ready fixes.
+            </p>
+          </div>
+        </Reveal>
 
         {/* 4 Stat Counters */}
         <div className="pt-8 border-t border-white/[0.08]">
@@ -117,40 +76,70 @@ export function WhoWeAre() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Stat 1 */}
-            <div className="p-6 rounded-xl border border-white/[0.08] bg-white/[0.015] hover:bg-white/[0.03] hover:border-white/20 transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT}
+              transition={{ duration: DURATIONS.base, delay: 0.05, ease: EASE_PREMIUM }}
+              className="p-6 rounded-xl border border-white/[0.08] bg-white/[0.015] hover:bg-white/[0.03] hover:border-white/20 transition-colors"
+            >
               <div className="font-mono text-xs text-zinc-400 uppercase tracking-wider mb-3">
                 [01] SCREENS ANALYZED
               </div>
-              <CountUpStat target={42850} suffix="+" duration={2200} />
+              <div className="font-mono text-3xl sm:text-4xl lg:text-5xl font-black text-white">
+                <CountUp target={42850} suffix="+" duration={2000} />
+              </div>
               <p className="mt-2 text-xs text-zinc-400 font-mono">
                 Mobile & desktop flows audited across SaaS, fintech, and commerce.
               </p>
-            </div>
+            </motion.div>
 
             {/* Stat 2 */}
-            <div className="p-6 rounded-xl border border-white/[0.08] bg-white/[0.015] hover:bg-white/[0.03] hover:border-white/20 transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT}
+              transition={{ duration: DURATIONS.base, delay: 0.12, ease: EASE_PREMIUM }}
+              className="p-6 rounded-xl border border-white/[0.08] bg-white/[0.015] hover:bg-white/[0.03] hover:border-white/20 transition-colors"
+            >
               <div className="font-mono text-xs text-zinc-400 uppercase tracking-wider mb-3">
                 [02] ISSUES ISOLATED
               </div>
-              <CountUpStat target={148200} suffix="+" duration={2500} />
+              <div className="font-mono text-3xl sm:text-4xl lg:text-5xl font-black text-white">
+                <CountUp target={148200} suffix="+" duration={2200} />
+              </div>
               <p className="mt-2 text-xs text-zinc-400 font-mono">
                 Usability blockers, contrast violations, and cognitive hurdles identified.
               </p>
-            </div>
+            </motion.div>
 
             {/* Stat 3 */}
-            <div className="p-6 rounded-xl border border-white/[0.08] bg-white/[0.015] hover:bg-white/[0.03] hover:border-white/20 transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT}
+              transition={{ duration: DURATIONS.base, delay: 0.19, ease: EASE_PREMIUM }}
+              className="p-6 rounded-xl border border-white/[0.08] bg-white/[0.015] hover:bg-white/[0.03] hover:border-white/20 transition-colors"
+            >
               <div className="font-mono text-xs text-zinc-400 uppercase tracking-wider mb-3">
                 [03] AVG. ANALYSIS TIME
               </div>
-              <CountUpStat target={1.8} decimals={1} suffix="s" duration={1800} />
+              <div className="font-mono text-3xl sm:text-4xl lg:text-5xl font-black text-white">
+                <CountUp target={1.8} decimals={1} suffix="s" duration={1800} />
+              </div>
               <p className="mt-2 text-xs text-zinc-400 font-mono">
                 Instant multi-heuristic evaluation with sub-2s turnaround.
               </p>
-            </div>
+            </motion.div>
 
             {/* Stat 4 */}
-            <div className="p-6 rounded-xl border border-white/[0.08] bg-white/[0.015] hover:bg-white/[0.03] hover:border-[#c8ff3d]/50 transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT}
+              transition={{ duration: DURATIONS.base, delay: 0.26, ease: EASE_PREMIUM }}
+              className="p-6 rounded-xl border border-white/[0.08] bg-white/[0.015] hover:bg-white/[0.03] hover:border-[#c8ff3d]/50 transition-colors"
+            >
               <div className="font-mono text-xs text-[#c8ff3d] uppercase tracking-wider mb-3">
                 [04] HEURISTICS COVERED
               </div>
@@ -160,18 +149,27 @@ export function WhoWeAre() {
               <p className="mt-2 text-xs text-zinc-400 font-mono">
                 Full Nielsen heuristics + WCAG 2.2 AA/AAA accessibility compliance.
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
 
         {/* 3 Pillars / Methodology Rows */}
         <div className="mt-16 pt-16 border-t border-white/[0.08] grid grid-cols-1 md:grid-cols-3 gap-8">
-          {pillars.map((pillar) => {
+          {pillars.map((pillar, idx) => {
             const Icon = pillar.icon;
             return (
-              <div
+              <motion.div
                 key={pillar.num}
-                className="group p-6 rounded-xl border border-white/[0.06] bg-zinc-950/40 hover:border-white/20 transition-all"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VIEWPORT}
+                transition={{
+                  duration: DURATIONS.base,
+                  delay: 0.1 + idx * 0.08,
+                  ease: EASE_PREMIUM,
+                }}
+                whileHover={{ y: -4 }}
+                className="group p-6 rounded-xl border border-white/[0.06] bg-zinc-950/40 hover:border-white/20 transition-all cursor-default"
               >
                 <div className="flex items-center justify-between mb-4">
                   <span className="font-mono text-xs text-[#c8ff3d]">[{pillar.num}]</span>
@@ -183,7 +181,7 @@ export function WhoWeAre() {
                 <p className="text-sm text-zinc-400 leading-relaxed font-light">
                   {pillar.desc}
                 </p>
-              </div>
+              </motion.div>
             );
           })}
         </div>
